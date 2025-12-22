@@ -48,7 +48,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m-7.843 3.751c1.457 0 2.816-.957 3.597-2.427m-7.194 0c.781 1.47 2.14 2.427 3.597 2.427m3.562-10.463c-.888 1.159-2.072 2.016-3.412 2.43m-3.412-2.43c-1.341-.414-2.525-1.271-3.412-2.43" />
                     </svg>
-                    <span class="text-sm font-semibold text-gray-700">EN</span>
+                    <span class="text-sm font-semibold text-gray-700">ID</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-4 h-4 text-gray-400">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
