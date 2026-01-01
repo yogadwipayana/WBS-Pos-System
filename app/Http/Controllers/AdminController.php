@@ -178,10 +178,18 @@ class AdminController extends Controller
             $query->where('total_amount', '<=', $request->amount_max);
         }
 
+        // Calculate stats before pagination to get totals for all matching records
+        $orderStats = (clone $query)->selectRaw('
+            count(*) as total,
+            sum(case when status = "pending" then 1 else 0 end) as pending,
+            sum(case when status = "preparing" then 1 else 0 end) as preparing,
+            sum(case when status = "completed" then 1 else 0 end) as completed
+        ')->first();
+
         // Order by created_at descending (newest first) and paginate
         $orders = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
-        return view('admin.orders', compact('orders'))->with('active', 'orders');
+        return view('admin.orders', compact('orders', 'orderStats'))->with('active', 'orders');
     }
 
     public function getOrderDetail($orderNumber)
@@ -213,54 +221,53 @@ class AdminController extends Controller
 
     public function menu()
     {
-        // Get all products for statistics (without pagination)
-        $allProducts = Product::with('category')
-            ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
-            ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
-            ->select(
-                'products.*',
-                DB::raw('COALESCE(SUM(CASE WHEN orders.status != "cancelled" THEN order_items.quantity ELSE 0 END), 0) as total_sold'),
-                DB::raw('COALESCE(SUM(CASE WHEN orders.status != "cancelled" THEN order_items.subtotal ELSE 0 END), 0) as total_revenue')
-            )
-            ->groupBy('products.id', 'products.category_id', 'products.name', 'products.price', 'products.stock', 'products.created_at', 'products.updated_at')
-            ->orderBy('total_sold', 'desc')
-            ->get();
-
-        // Calculate summary statistics
+        // Calculate totals for summary cards
+        $allProducts = Product::all();
         $totalProducts = $allProducts->count();
         $totalStock = $allProducts->sum('stock');
         $lowStockCount = $allProducts->where('stock', '<', 10)->count();
         $outOfStockCount = $allProducts->where('stock', '=', 0)->count();
-        $totalRevenue = $allProducts->sum('total_revenue');
+
+        // Calculate total revenue from all orders
+        $totalRevenue = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->where('orders.status', '!=', 'cancelled')
+            ->sum('order_items.subtotal');
+
 
         // Get top selling products (top 5)
-        $topSellingProducts = $allProducts->take(5);
-
-        // Get paginated products for the table
-        $products = Product::with('category')
-            ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+        $topSellingProducts = Product::leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
             ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
             ->select(
                 'products.*',
                 DB::raw('COALESCE(SUM(CASE WHEN orders.status != "cancelled" THEN order_items.quantity ELSE 0 END), 0) as total_sold'),
                 DB::raw('COALESCE(SUM(CASE WHEN orders.status != "cancelled" THEN order_items.subtotal ELSE 0 END), 0) as total_revenue')
             )
-            ->groupBy('products.id', 'products.category_id', 'products.name', 'products.price', 'products.stock', 'products.created_at', 'products.updated_at')
+            ->groupBy('products.id', 'products.category_id', 'products.name', 'products.price', 'products.stock', 'products.image', 'products.description', 'products.created_at', 'products.updated_at')
             ->orderBy('total_sold', 'desc')
-            ->paginate(15);
+            ->take(5)
+            ->get();
 
-        // Get all categories for dropdown
-        $categories = Category::all();
+        // Get categories with their products and stats
+        $categories = Category::with(['products' => function ($query) {
+            $query->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+                ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
+                ->select(
+                    'products.*',
+                    DB::raw('COALESCE(SUM(CASE WHEN orders.status != "cancelled" THEN order_items.quantity ELSE 0 END), 0) as total_sold'),
+                    DB::raw('COALESCE(SUM(CASE WHEN orders.status != "cancelled" THEN order_items.subtotal ELSE 0 END), 0) as total_revenue')
+                )
+                ->groupBy('products.id', 'products.category_id', 'products.name', 'products.price', 'products.stock', 'products.image', 'products.description', 'products.created_at', 'products.updated_at')
+                ->orderBy('total_sold', 'desc');
+        }])->get();
 
         return view('admin.menu', compact(
-            'products',
+            'categories',
             'totalProducts',
             'totalStock',
             'lowStockCount',
             'outOfStockCount',
             'totalRevenue',
-            'topSellingProducts',
-            'categories'
+            'topSellingProducts'
         ))->with('active', 'menu');
     }
 

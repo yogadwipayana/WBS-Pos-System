@@ -117,6 +117,16 @@
                     <span id="checkStatusText">Check Status Pesanan</span>
                 </button>
 
+                <button id="downloadReceiptBtn" onclick="downloadReceipt()"
+                    class="w-full bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-700 font-bold py-3.5 px-6 rounded-xl shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    <span>Download Struk</span>
+                </button>
+
                 <!-- Warning Information -->
                 <div class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
                     <div class="flex items-start gap-3">
@@ -129,7 +139,8 @@
                             <h4 class="font-bold text-yellow-900 mb-1">Perhatian!</h4>
                             <p class="text-sm text-yellow-800 leading-relaxed">
                                 Jika Anda keluar dari halaman ini, Anda tidak bisa mengecek status pesanan lagi.
-                                <span class="font-semibold">Catat nomor pesanan Anda terlebih dahulu</span> sebelum
+                                <span class="font-semibold">Catat nomor pesanan Anda atau download struk terlebih
+                                    dahulu</span> sebelum
                                 meninggalkan halaman.
                             </p>
                         </div>
@@ -140,7 +151,8 @@
     </div>
 
     <!-- Status Modal -->
-    <div id="statusModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div id="statusModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all">
             <!-- Modal Header -->
             <div id="modalHeader" class="p-6 rounded-t-2xl">
@@ -362,6 +374,25 @@
             // Show modal
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+        }
+
+        // Function to download receipt
+        function downloadReceipt() {
+            const orderData = localStorage.getItem('wbs_order_data');
+
+            if (!orderData) {
+                alert('No order data found');
+                return;
+            }
+
+            try {
+                const order = JSON.parse(orderData);
+                // Open receipt download in new tab
+                window.open(`/api/order/${order.order_number}/receipt`, '_blank');
+            } catch (error) {
+                console.error('Error downloading receipt:', error);
+                alert('Gagal mendownload struk. Silakan coba lagi.');
+            }
         }
 
         // Function to close status modal

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AccountController;
 
 Route::get('/', function () {
     return view('mode');
@@ -60,14 +61,18 @@ Route::middleware(['admin.auth'])->group(function () {
         Route::get('/dashboard/transactions/export', [AdminController::class, 'exportTransactions'])->name('admin.transactions.export');
     });
 
-    // Cashier Only Routes
-    Route::middleware(['role:cashier'])->group(function () {
-        Route::get('/dashboard/cashier', [AdminController::class, 'cashier'])->name('admin.cashier');
-    });
-
     // Shared Routes (Admin & Cashier)
     Route::middleware(['role:admin,cashier'])->group(function () {
+        Route::get('/dashboard/cashier', [AdminController::class, 'cashier'])->name('admin.cashier');
         Route::get('/dashboard/orders', [AdminController::class, 'orders'])->name('admin.orders');
+    });
+
+    // Admin Only Routes
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/dashboard/accounts', [AccountController::class, 'index'])->name('admin.accounts');
+        Route::post('/dashboard/accounts', [AccountController::class, 'store'])->name('admin.accounts.store');
+        Route::put('/dashboard/accounts/{id}', [AccountController::class, 'update'])->name('admin.accounts.update');
+        Route::delete('/dashboard/accounts/{id}', [AccountController::class, 'destroy'])->name('admin.accounts.destroy');
     });
 });
 
@@ -90,6 +95,7 @@ Route::prefix('api')->group(function () {
     // Order API Routes (Public for customer orders)
     Route::post('/order', [OrderController::class, 'store']);
     Route::get('/order/{orderNumber}', [OrderController::class, 'show']);
+    Route::get('/order/{orderNumber}/receipt', [OrderController::class, 'downloadReceipt'])->name('order.receipt');
 
     // Order Management Routes (Protected - Admin & Cashier)
     Route::middleware(['admin.auth', 'role:admin,cashier'])->group(function () {

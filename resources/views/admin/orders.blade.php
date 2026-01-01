@@ -107,7 +107,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-xs font-medium mb-1">Total Orders</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ $orders->total() }}</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ $orderStats->total }}</p>
                         </div>
                         <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -124,7 +124,7 @@
                         <div>
                             <p class="text-gray-500 text-xs font-medium mb-1">Pending</p>
                             <p class="text-2xl font-bold text-yellow-600">
-                                {{ $orders->where('status', 'pending')->count() }}
+                                {{ $orderStats->pending }}
                             </p>
                         </div>
                         <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
@@ -142,7 +142,7 @@
                         <div>
                             <p class="text-gray-500 text-xs font-medium mb-1">Preparing</p>
                             <p class="text-2xl font-bold text-orange-600">
-                                {{ $orders->where('status', 'preparing')->count() }}
+                                {{ $orderStats->preparing }}
                             </p>
                         </div>
                         <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
@@ -162,7 +162,7 @@
                         <div>
                             <p class="text-gray-500 text-xs font-medium mb-1">Completed</p>
                             <p class="text-2xl font-bold text-green-600">
-                                {{ $orders->where('status', 'completed')->count() }}
+                                {{ $orderStats->completed }}
                             </p>
                         </div>
                         <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">

@@ -136,8 +136,8 @@
                                     data-item-id="{{ $product->id }}" data-item-name="{{ $product->name }}"
                                     data-item-price="{{ $product->price }}">
                                     <div class="rounded-lg overflow-hidden h-32 w-full mb-3 relative">
-                                        <img src="{{ $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset('storage/' . $product->image)) : 'https://esb-order.oss-ap-southeast-5.aliyuncs.com/images/mbss/menu/MNU_3485_20250519193451_thumb.webp' }}"
-                                            alt="{{ $product->name }}" class="w-full h-full object-cover">
+                                        <img src="/public/images/{{ $product->image }}" alt="{{ $product->name }}"
+                                            class="w-full h-full object-cover">
                                     </div>
                                     <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">{{ $product->name }}
                                     </h4>

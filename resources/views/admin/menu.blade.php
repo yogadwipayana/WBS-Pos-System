@@ -211,202 +211,160 @@
                 </div>
             </div>
 
-            <!-- All Menu Products Table -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-                <div class="p-6 border-b border-gray-100">
-                    <h2 class="text-lg font-bold text-gray-900">All Menu Items</h2>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50 border-b border-gray-100">
-                            <tr>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Menu Item</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Category</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Price</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Stock</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Total Sold</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Revenue</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Status</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100" id="menuTableBody">
-                            @forelse($products as $product)
-                                <tr class="hover:bg-gray-50 transition-colors menu-row"
-                                    data-name="{{ strtolower($product->name) }}">
-                                    <td class="px-6 py-4">
-                                        <div class="font-medium text-gray-900">{{ $product->name }}</div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            {{ $product->category->name ?? 'No Category' }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900">
-                                        Rp {{ number_format($product->price, 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2">
-                                            <span
-                                                class="text-sm font-semibold 
-                                                        @if ($product->stock == 0) text-red-600
-                                                        @elseif($product->stock < 10) text-yellow-600
-                                                        @else text-green-600 @endif">
-                                                {{ $product->stock }}
-                                            </span>
-                                            @if ($product->stock < 10 && $product->stock > 0)
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                                    class="w-4 h-4 text-yellow-500">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                                                </svg>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="text-sm font-semibold text-gray-900">{{ $product->total_sold }}</span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900">
-                                        Rp {{ number_format($product->total_revenue, 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        @if ($product->stock == 0)
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                Out of Stock
-                                            </span>
-                                        @elseif($product->stock < 10)
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                Low Stock
-                                            </span>
-                                        @else
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                In Stock
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2">
-                                            <button type="button" data-action="edit" data-id="{{ $product->id }}"
-                                                data-name="{{ $product->name }}"
-                                                data-category="{{ $product->category_id }}"
-                                                data-price="{{ $product->price }}" data-stock="{{ $product->stock }}"
-                                                data-image="{{ $product->image ?? '' }}"
-                                                data-description="{{ $product->description ?? '' }}"
-                                                class="edit-btn text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-1 transition-colors">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="w-4 h-4">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                                </svg>
-                                                Edit
-                                            </button>
-                                            <button type="button" data-action="delete" data-id="{{ $product->id }}"
-                                                data-name="{{ $product->name }}"
-                                                class="delete-btn text-red-600 hover:text-red-800 font-medium text-sm flex items-center gap-1 transition-colors">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="w-4 h-4">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                </svg>
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="px-6 py-12 text-center text-gray-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor"
-                                            class="w-12 h-12 mx-auto mb-2 text-gray-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                                        </svg>
-                                        <p>No menu items found</p>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                @if ($products->hasPages())
-                    <div class="px-6 py-4 border-t border-gray-100">
-                        <div class="flex items-center justify-between">
-                            <div class="text-sm text-gray-500">
-                                Menampilkan {{ $products->firstItem() }} - {{ $products->lastItem() }} dari
-                                {{ $products->total() }} menu
-                            </div>
-                            <div class="flex gap-2">
-                                {{-- Previous Button --}}
-                                @if ($products->onFirstPage())
-                                    <span
-                                        class="px-4 py-2 border border-gray-300 text-gray-400 rounded-lg cursor-not-allowed">
-                                        Previous
-                                    </span>
-                                @else
-                                    <a href="{{ $products->previousPageUrl() }}"
-                                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                                        Previous
-                                    </a>
-                                @endif
-
-                                {{-- Page Numbers --}}
-                                @foreach ($products->getUrlRange(1, $products->lastPage()) as $page => $url)
-                                    @if ($page == $products->currentPage())
-                                        <span class="px-4 py-2 bg-primary text-white rounded-lg font-semibold">
-                                            {{ $page }}
-                                        </span>
-                                    @else
-                                        <a href="{{ $url }}"
-                                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                                            {{ $page }}
-                                        </a>
-                                    @endif
-                                @endforeach
-
-                                {{-- Next Button --}}
-                                @if ($products->hasMorePages())
-                                    <a href="{{ $products->nextPageUrl() }}"
-                                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                                        Next
-                                    </a>
-                                @else
-                                    <span
-                                        class="px-4 py-2 border border-gray-300 text-gray-400 rounded-lg cursor-not-allowed">
-                                        Next
-                                    </span>
-                                @endif
-                            </div>
+            <!-- Categorized Menu Tables -->
+            @forelse($categories as $category)
+                @if ($category->products->count() > 0)
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
+                        <div
+                            class="p-6 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
+                            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
+                                {{ $category->name }}
+                            </h2>
+                            <span
+                                class="text-sm text-gray-500 font-medium bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
+                                {{ $category->products->count() }} Items
+                            </span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50/50 border-b border-gray-100">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Menu Item</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Price</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Stock</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Total Sold</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Revenue</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100" id="menuTableBody-{{ $category->id }}">
+                                    @foreach ($category->products as $product)
+                                        <tr class="hover:bg-gray-50 transition-colors menu-row"
+                                            data-name="{{ strtolower($product->name) }}">
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center gap-3">
+                                                    @if ($product->image)
+                                                        <div
+                                                            class="h-10 w-10 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                                                            <img src="/public/images/{{ $product->image }}"
+                                                                alt="{{ $product->name }}"
+                                                                class="h-full w-full object-cover">
+                                                        </div>
+                                                    @endif
+                                                    <div class="font-medium text-gray-900">{{ $product->name }}</div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-900">
+                                                Rp {{ number_format($product->price, 0, ',', '.') }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center gap-2">
+                                                    <span
+                                                        class="text-sm font-semibold 
+                                                            @if ($product->stock == 0) text-red-600
+                                                            @elseif($product->stock < 10) text-yellow-600
+                                                            @else text-green-600 @endif">
+                                                        {{ $product->stock }}
+                                                    </span>
+                                                    @if ($product->stock < 10 && $product->stock > 0)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                            class="w-4 h-4 text-yellow-500">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                                        </svg>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <span
+                                                    class="text-sm font-semibold text-gray-900">{{ $product->total_sold }}</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-900">
+                                                Rp {{ number_format($product->total_revenue, 0, ',', '.') }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                @if ($product->stock == 0)
+                                                    <span
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                        Out of Stock
+                                                    </span>
+                                                @elseif($product->stock < 10)
+                                                    <span
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                        Low Stock
+                                                    </span>
+                                                @else
+                                                    <span
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                        In Stock
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center gap-2">
+                                                    <button type="button" data-action="edit"
+                                                        data-id="{{ $product->id }}" data-name="{{ $product->name }}"
+                                                        data-category="{{ $product->category_id }}"
+                                                        data-price="{{ $product->price }}"
+                                                        data-stock="{{ $product->stock }}"
+                                                        data-image="{{ $product->image ?? '' }}"
+                                                        data-description="{{ $product->description ?? '' }}"
+                                                        class="edit-btn text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-1 transition-colors">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                            class="w-4 h-4">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                        </svg>
+                                                        Edit
+                                                    </button>
+                                                    <button type="button" data-action="delete"
+                                                        data-id="{{ $product->id }}" data-name="{{ $product->name }}"
+                                                        class="delete-btn text-red-600 hover:text-red-800 font-medium text-sm flex items-center gap-1 transition-colors">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                            class="w-4 h-4">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                        </svg>
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 @endif
-            </div>
+            @empty
+                <div class="text-center py-12 text-gray-500 bg-white rounded-xl shadow-sm border border-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-12 h-12 mx-auto mb-2 text-gray-400">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                    <p>No menu items found</p>
+                </div>
+            @endforelse
 
         </div>
     </main>
@@ -470,11 +428,10 @@
 
                     <!-- Image URL -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Image Filename</label>
-                        <input type="text" id="productImage"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
-                            placeholder="product.jpg">
-                        <p class="text-xs text-gray-500 mt-1">Place image in public/images/ folder</p>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Image</label>
+                        <input type="file" id="productImage" accept="image/*"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <p class="text-xs text-gray-500 mt-1">Place image in public/images/ folder. Max 2MB.</p>
                     </div>
 
                     <!-- Description -->
@@ -561,11 +518,10 @@
 
                     <!-- Image URL -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Image Filename</label>
-                        <input type="text" id="editProductImage"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
-                            placeholder="product.jpg">
-                        <p class="text-xs text-gray-500 mt-1">Place image in public/images/ folder</p>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Image</label>
+                        <input type="file" id="editProductImage" accept="image/*"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <p class="text-xs text-gray-500 mt-1">Leave empty to keep existing. Max 2MB.</p>
                     </div>
 
                     <!-- Description -->
@@ -639,10 +595,11 @@
                     const categoryId = button.dataset.category;
                     const price = button.dataset.price;
                     const stock = button.dataset.stock;
-                    const image = button.dataset.image;
+                    // We don't preload the file input, but we can keep track of current image if needed
+                    // const image = button.dataset.image; 
                     const description = button.dataset.description;
 
-                    openEditModal(id, name, categoryId, price, stock, image, description);
+                    openEditModal(id, name, categoryId, price, stock, null, description);
                 }
 
                 // Handle delete button clicks
@@ -688,47 +645,69 @@
             const categoryId = document.getElementById('productCategory').value;
             const price = document.getElementById('productPrice').value;
             const stock = document.getElementById('productStock').value;
-            const image = document.getElementById('productImage').value;
+            const imageInput = document.getElementById('productImage');
             const description = document.getElementById('productDescription').value;
 
             // Validation
             if (!name || !categoryId || !price || !stock) {
-                alert('Please fill all required fields');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Fields',
+                    text: 'Please fill all required fields'
+                });
                 return;
             }
 
-            const data = {
-                name: name,
-                category_id: parseInt(categoryId),
-                price: parseInt(price),
-                stock: parseInt(stock),
-                image: image || null,
-                description: description || null
-            };
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('category_id', categoryId);
+            formData.append('price', price);
+            formData.append('stock', stock);
+            if (imageInput.files[0]) {
+                formData.append('image', imageInput.files[0]);
+            }
+            if (description) {
+                formData.append('description', description);
+            }
 
             try {
                 const response = await fetch('/api/products', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        // do NOT set Content-Type header when using FormData
                     },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Product added successfully!');
-                    closeAddProductModal();
-                    window.location.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Product added successfully!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        closeAddProductModal();
+                        window.location.reload();
+                    });
                 } else {
-                    alert('Failed to add product: ' + (result.message || 'Unknown error'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to add product: ' + (result.message || 'Unknown error')
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to add product: ' + error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to add product: ' + error.message
+                });
             }
         }
 
@@ -739,7 +718,8 @@
             document.getElementById('editProductCategory').value = categoryId;
             document.getElementById('editProductPrice').value = price;
             document.getElementById('editProductStock').value = stock;
-            document.getElementById('editProductImage').value = image || '';
+            // image is not set on file input
+            document.getElementById('editProductImage').value = '';
             document.getElementById('editProductDescription').value = description || '';
 
             document.getElementById('editProductModal').classList.remove('hidden');
@@ -758,66 +738,93 @@
             const categoryId = document.getElementById('editProductCategory').value;
             const price = document.getElementById('editProductPrice').value;
             const stock = document.getElementById('editProductStock').value;
-            const image = document.getElementById('editProductImage').value;
+            const imageInput = document.getElementById('editProductImage');
             const description = document.getElementById('editProductDescription').value;
 
             // Validation
             if (!name || !categoryId || !price || !stock) {
-                alert('Please fill all required fields');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Fields',
+                    text: 'Please fill all required fields'
+                });
                 return;
             }
 
-            const data = {
-                name: name,
-                category_id: parseInt(categoryId),
-                price: parseInt(price),
-                stock: parseInt(stock),
-                image: image || null,
-                description: description || null
-            };
+            const formData = new FormData();
+            formData.append('_method', 'PUT'); // Method spoofing for Laravel
+            formData.append('name', name);
+            formData.append('category_id', categoryId);
+            formData.append('price', price);
+            formData.append('stock', stock);
+            if (imageInput.files[0]) {
+                formData.append('image', imageInput.files[0]);
+            }
+            if (description) {
+                formData.append('description', description);
+            }
 
             try {
+                // Note: using POST with _method=PUT because standard HTML forms/FormData don't support PUT with files easily in Laravel
                 const response = await fetch(`/api/products/${id}`, {
-                    method: 'PUT',
+                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
                     },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Product updated successfully!');
-                    closeEditModal();
-                    window.location.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Product updated successfully!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        closeEditModal();
+                        window.location.reload();
+                    });
                 } else {
-                    alert('Failed to update product: ' + (result.message || 'Unknown error'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update product: ' + (result.message || 'Unknown error')
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to update product: ' + error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to update product: ' + error.message
+                });
             }
         }
 
         // Delete Product Modal Functions
         function confirmDelete(id, name) {
-            document.getElementById('deleteProductId').value = id;
-            document.getElementById('deleteProductName').textContent = name;
-            document.getElementById('deleteModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You want to delete "${name}"? This action cannot be undone.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    submitDeleteProduct(id);
+                }
+            });
         }
 
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
+        // Removed closeDeleteModal as it's no longer needed with SweetAlert
 
-        async function submitDeleteProduct() {
-            const id = document.getElementById('deleteProductId').value;
-
+        async function submitDeleteProduct(id) {
             try {
                 const response = await fetch(`/api/products/${id}`, {
                     method: 'DELETE',
@@ -830,15 +837,29 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Product deleted successfully!');
-                    closeDeleteModal();
-                    window.location.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Product has been deleted.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
                 } else {
-                    alert('Failed to delete product: ' + (result.message || 'Unknown error'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to delete product: ' + (result.message || 'Unknown error')
+                    });
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to delete product: ' + error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to delete product: ' + error.message
+                });
             }
         }
     </script>

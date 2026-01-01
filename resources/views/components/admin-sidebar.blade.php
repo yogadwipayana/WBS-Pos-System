@@ -9,8 +9,8 @@
     <!-- Logo -->
     <div class="h-16 flex items-center px-6 border-b border-gray-100">
         <div class="flex items-center gap-2 font-bold text-xl text-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                stroke="currentColor" class="w-8 h-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                class="w-8 h-8">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -22,7 +22,7 @@
 
     <!-- Navigation -->
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-        @if($role === 'admin')
+        @if ($role === 'admin')
             <!-- Dashboard -->
             <a href="/dashboard"
                 class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'dashboard' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
@@ -34,6 +34,28 @@
                 Dasbor
             </a>
 
+            <!-- Cashier -->
+            <a href="/dashboard/cashier"
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'cashier' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                </svg>
+                Kasir
+            </a>
+
+            <!-- Orders -->
+            <a href="/dashboard/orders"
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'orders' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
+                Pesanan
+            </a>
+
             <!-- Menu Management -->
             <a href="/dashboard/menu"
                 class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'menu' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
@@ -43,6 +65,17 @@
                         d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                 </svg>
                 Menu
+            </a>
+
+            <!-- Accounts Management -->
+            <a href="/dashboard/accounts"
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'accounts' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                </svg>
+                Accounts
             </a>
 
             <!-- Transactions -->
@@ -99,8 +132,7 @@
     <!-- User Info -->
     <div class="p-4 border-t border-gray-100">
         <div class="flex items-center gap-3 px-3 py-2">
-            <div
-                class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-primary font-bold">
+            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-primary font-bold">
                 {{ strtoupper(substr(session('admin_name', 'A'), 0, 1)) }}
             </div>
             <div class="flex-1 min-w-0">

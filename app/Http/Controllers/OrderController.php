@@ -8,9 +8,26 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreOrderRequest;
 use Illuminate\Support\Facades\DB;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class OrderController extends Controller
 {
+    /**
+     * Download customer receipt PDF
+     */
+    public function downloadReceipt($orderNumber)
+    {
+        // Find order with items and relations
+        $order = Order::where('order_number', $orderNumber)
+            ->with(['orderItems.product'])
+            ->firstOrFail();
+
+        // Generate PDF
+        return Pdf::view('pdf.customer-receipt', ['order' => $order])
+            ->format('a4') // Receipt size can be adjusted to 'a5' or custom width if needed, but a4 is safe
+            ->name('receipt-' . $order->order_number . '.pdf');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -37,7 +54,7 @@ class OrderController extends Controller
 
         // Use database transaction for data consistency
         DB::beginTransaction();
-        
+
         try {
             // Create new order
             $order = Order::create([
@@ -98,7 +115,7 @@ class OrderController extends Controller
 
             // Get payment method from request (default to cash if not provided)
             $paymentMethod = $request->input('payment_method', 'cash');
-            
+
             // Validate payment method
             if (!in_array($paymentMethod, ['cash', 'qris', 'transfer'])) {
                 $paymentMethod = 'cash';
@@ -106,7 +123,7 @@ class OrderController extends Controller
 
             // Generate unique transaction number
             $transactionNumber = 'TRX' . date('Ymd') . str_pad($order->id, 6, '0', STR_PAD_LEFT);
-            
+
             // Create transaction record with paid status
             $transaction = Transaction::create([
                 'order_id' => $order->id,
@@ -129,11 +146,10 @@ class OrderController extends Controller
                     'transaction' => $transaction
                 ]
             ], 201);
-            
         } catch (\Exception $e) {
             // Rollback on any error
             DB::rollBack();
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create order: ' . $e->getMessage()

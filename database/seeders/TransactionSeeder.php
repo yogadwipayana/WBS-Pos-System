@@ -21,24 +21,23 @@ class TransactionSeeder extends Seeder
             return;
         }
 
-        $paymentMethods = ['cash', 'qris', 'transfer'];
+        $paymentMethods = ['cash', 'qris'];
         $paymentStatuses = ['pending', 'paid', 'failed'];
 
         foreach ($orders as $order) {
             $paymentMethod = $paymentMethods[array_rand($paymentMethods)];
             $paymentStatus = $paymentStatuses[array_rand($paymentStatuses)];
-            
+
             // Generate unique transaction number
             $transactionNumber = 'TRX' . date('Ymd') . str_pad($order->id, 6, '0', STR_PAD_LEFT);
-            
+
             Transaction::create([
                 'order_id' => $order->id,
                 'transaction_number' => $transactionNumber,
                 'payment_method' => $paymentMethod,
                 'payment_status' => $paymentStatus,
                 'amount' => $order->total_amount,
-                'notes' => $paymentStatus === 'pending' ? 'Menunggu konfirmasi pembayaran' : 
-                          ($paymentStatus === 'paid' ? 'Pembayaran berhasil' : 'Pembayaran gagal'),
+                'notes' => $paymentStatus === 'pending' ? 'Menunggu konfirmasi pembayaran' : ($paymentStatus === 'paid' ? 'Pembayaran berhasil' : 'Pembayaran gagal'),
                 'created_at' => $order->created_at,
                 'updated_at' => $order->updated_at,
             ]);
