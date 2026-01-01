@@ -20,7 +20,14 @@ class AdminSeeder extends Seeder
                 'password' => bcrypt('password'),
                 'role' => 'admin',
                 'is_active' => true,
-            ]
+            ],
+            [
+                'name' => 'Kasir WBS',
+                'email' => 'kasir@wbs.com',
+                'password' => bcrypt('password'),
+                'role' => 'cashier',
+                'is_active' => true,
+            ],
         ];
 
         foreach ($admins as $admin) {

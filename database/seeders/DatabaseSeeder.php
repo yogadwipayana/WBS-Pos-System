@@ -2,14 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
-use App\Models\User;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Order;
-use App\Models\OrderItem;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,18 +15,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin::truncate();
-        // User::truncate();
-        // Category::truncate();
-        // Product::truncate();
-        // Order::truncate();
-        // OrderItem::truncate();
+        // Disable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // Truncate all tables
+        DB::table('transactions')->truncate();
+        DB::table('order_items')->truncate();
+        DB::table('orders')->truncate();
+        DB::table('products')->truncate();
+        DB::table('categories')->truncate();
+        DB::table('admins')->truncate();
+
+        // Re-enable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->call([
             CategorySeeder::class,
             ProductSeeder::class,
             AdminSeeder::class,
-            UserSeeder::class,
+            OrderSeeder::class,
+            TransactionSeeder::class,
         ]);
     }
 }

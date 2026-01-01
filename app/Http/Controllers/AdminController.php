@@ -6,10 +6,15 @@ use App\Models\Admin;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
+use App\Models\Transaction;
+use App\Models\Category;
+use App\Exports\TransactionExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UpdateOrderStatusRequest;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class AdminController extends Controller
 {
@@ -46,8 +51,14 @@ class AdminController extends Controller
             'admin_logged_in' => true,
             'admin_id' => $admin->id,
             'admin_name' => $admin->name,
-            'admin_email' => $admin->email
+            'admin_email' => $admin->email,
+            'admin_role' => $admin->role
         ]);
+
+        // Redirect based on role
+        if ($admin->role === 'cashier') {
+            return redirect()->route('admin.cashier')->with('success', 'Welcome back, ' . $admin->name);
+        }
 
         return redirect()->route('admin.dashboard')->with('success', 'Welcome back, ' . $admin->name);
     }
@@ -57,7 +68,7 @@ class AdminController extends Controller
      */
     public function logout()
     {
-        session()->forget(['admin_logged_in', 'admin_id', 'admin_name', 'admin_email']);
+        session()->forget(['admin_logged_in', 'admin_id', 'admin_name', 'admin_email', 'admin_role']);
         session()->flush();
         return redirect()->route('admin.login')->with('success', 'You have been logged out successfully');
     }
@@ -71,39 +82,69 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        // Fetch recent orders (latest 5) with eager loading to avoid N+1
-        $orders = Order::with('orderItems')
-            ->orderBy('created_at', 'desc')
+        // Revenue today
+        $revenueToday = Order::where('status', '!=', 'cancelled')
+            ->whereDate('created_at', today())
+            ->sum('total_amount');
+
+        // Revenue this week (last 7 days - for comparison/tracking)
+        $revenueWeek = Order::where('status', '!=', 'cancelled')
+            ->whereDate('created_at', '>=', now()->subDays(6))
+            ->sum('total_amount');
+
+        // Total Orders Today
+        $totalOrdersToday = Order::whereDate('created_at', today())->count();
+
+        // Active Orders (Pending + Preparing + Ready)
+        $activeOrdersCount = Order::whereIn('status', ['pending', 'preparing', 'ready'])->count();
+
+        // Top 5 favorite menu items (Keep for Bestseller logic)
+        $favoriteMenu = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->where('orders.status', '!=', 'cancelled')
+            ->selectRaw('order_items.product_name, SUM(order_items.quantity) as total_sold')
+            ->groupBy('order_items.product_name')
+            ->orderBy('total_sold', 'desc')
             ->take(5)
             ->get();
 
-        // Calculate dynamic statistics from database
-        $stats = [
-            // Total revenue from completed orders
-            'total_revenue' => Order::where('status', 'completed')
-                ->sum('total_amount'),
+        // Bestseller item
+        $bestseller = $favoriteMenu->first();
 
-            // Count of active orders (not completed/cancelled)
-            'active_orders' => Order::whereIn('status', ['pending', 'preparing', 'ready'])
-                ->count(),
+        // Get sales data for the last 7 days
+        $salesData = Order::where('status', '!=', 'cancelled')
+            ->whereDate('created_at', '>=', now()->subDays(6))
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_orders, SUM(total_amount) as total_sales')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
 
-            // Total orders created today
-            'total_orders_today' => Order::whereDate('created_at', today())
-                ->count(),
+        // Fill in missing dates with zero values
+        $chartData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $dayData = $salesData->firstWhere('date', $date);
 
-            // Find bestselling product
-            'bestseller' => OrderItem::select('product_name', DB::raw('SUM(quantity) as total_sold'))
-                ->groupBy('product_name')
-                ->orderBy('total_sold', 'desc')
-                ->first()
-        ];
+            $chartData[] = [
+                'date' => $date,
+                'label' => now()->subDays($i)->format('D, M j'),
+                'total_orders' => $dayData ? $dayData->total_orders : 0,
+                'total_sales' => $dayData ? $dayData->total_sales : 0,
+            ];
+        }
 
-        return view('admin.dashboard', compact('orders', 'stats'));
+        return view('admin.dashboard', compact(
+            'revenueToday',
+            'revenueWeek',
+            'totalOrdersToday',
+            'activeOrdersCount',
+            'bestseller',
+            'chartData'
+        ))->with('active', 'dashboard');
     }
 
     public function cashier()
     {
-        return view('admin.cashier');
+        return view('admin.cashier')->with('active', 'cashier');
     }
 
     public function orders(Request $request)
@@ -140,7 +181,7 @@ class AdminController extends Controller
         // Order by created_at descending (newest first) and paginate
         $orders = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
-        return view('admin.orders', compact('orders'));
+        return view('admin.orders', compact('orders'))->with('active', 'orders');
     }
 
     public function getOrderDetail($orderNumber)
@@ -172,8 +213,8 @@ class AdminController extends Controller
 
     public function menu()
     {
-        // Get products with their categories and calculate sales statistics
-        $products = Product::with('category')
+        // Get all products for statistics (without pagination)
+        $allProducts = Product::with('category')
             ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
             ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
             ->select(
@@ -186,14 +227,30 @@ class AdminController extends Controller
             ->get();
 
         // Calculate summary statistics
-        $totalProducts = $products->count();
-        $totalStock = $products->sum('stock');
-        $lowStockCount = $products->where('stock', '<', 10)->count();
-        $outOfStockCount = $products->where('stock', '=', 0)->count();
-        $totalRevenue = $products->sum('total_revenue');
+        $totalProducts = $allProducts->count();
+        $totalStock = $allProducts->sum('stock');
+        $lowStockCount = $allProducts->where('stock', '<', 10)->count();
+        $outOfStockCount = $allProducts->where('stock', '=', 0)->count();
+        $totalRevenue = $allProducts->sum('total_revenue');
 
         // Get top selling products (top 5)
-        $topSellingProducts = $products->take(5);
+        $topSellingProducts = $allProducts->take(5);
+
+        // Get paginated products for the table
+        $products = Product::with('category')
+            ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+            ->leftJoin('orders', 'order_items.order_id', '=', 'orders.id')
+            ->select(
+                'products.*',
+                DB::raw('COALESCE(SUM(CASE WHEN orders.status != "cancelled" THEN order_items.quantity ELSE 0 END), 0) as total_sold'),
+                DB::raw('COALESCE(SUM(CASE WHEN orders.status != "cancelled" THEN order_items.subtotal ELSE 0 END), 0) as total_revenue')
+            )
+            ->groupBy('products.id', 'products.category_id', 'products.name', 'products.price', 'products.stock', 'products.created_at', 'products.updated_at')
+            ->orderBy('total_sold', 'desc')
+            ->paginate(15);
+
+        // Get all categories for dropdown
+        $categories = Category::all();
 
         return view('admin.menu', compact(
             'products',
@@ -202,88 +259,135 @@ class AdminController extends Controller
             'lowStockCount',
             'outOfStockCount',
             'totalRevenue',
-            'topSellingProducts'
-        ));
+            'topSellingProducts',
+            'categories'
+        ))->with('active', 'menu');
     }
 
-    public function settings()
-    {
-        // Available theme options
-        $themes = [
-            [
-                'id' => 'orange',
-                'name' => 'Orange Classic',
-                'description' => 'Warm and energetic orange theme',
-                'primary' => '#f05a28',
-                'secondary' => '#ff8c42'
-            ],
-            [
-                'id' => 'blue',
-                'name' => 'Ocean Blue',
-                'description' => 'Cool and professional blue theme',
-                'primary' => '#2563eb',
-                'secondary' => '#3b82f6'
-            ],
-            [
-                'id' => 'green',
-                'name' => 'Nature Green',
-                'description' => 'Fresh and natural green theme',
-                'primary' => '#16a34a',
-                'secondary' => '#22c55e'
-            ],
-            [
-                'id' => 'purple',
-                'name' => 'Royal Purple',
-                'description' => 'Elegant and luxurious purple theme',
-                'primary' => '#9333ea',
-                'secondary' => '#a855f7'
-            ],
-            [
-                'id' => 'red',
-                'name' => 'Bold Red',
-                'description' => 'Strong and passionate red theme',
-                'primary' => '#dc2626',
-                'secondary' => '#ef4444'
-            ],
-            [
-                'id' => 'monochrome',
-                'name' => 'Monochrome',
-                'description' => 'Clean and minimal grayscale theme',
-                'primary' => '#374151',
-                'secondary' => '#6b7280'
-            ]
-        ];
-
-        // Get current settings from session or use defaults
-        $currentTheme = session('admin_theme', 'orange');
-        $darkMode = session('admin_dark_mode', false);
-
-        return view('admin.settings', compact('themes', 'currentTheme', 'darkMode'));
-    }
-
-    public function updateSettings(Request $request)
+    public function storeProduct(Request $request)
     {
         // Validate request
         $request->validate([
-            'theme' => 'required|in:orange,blue,green,purple,red,monochrome',
-            'dark_mode' => 'required|boolean'
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
+            'image' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
         ]);
 
-        // Store settings in session
-        session([
-            'admin_theme' => $request->theme,
-            'admin_dark_mode' => $request->dark_mode
-        ]);
+        try {
+            // Create product
+            $product = Product::create([
+                'name' => $request->name,
+                'category_id' => $request->category_id,
+                'price' => $request->price,
+                'stock' => $request->stock,
+                'image' => $request->image,
+                'description' => $request->description,
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Settings updated successfully',
-            'data' => [
-                'theme' => $request->theme,
-                'dark_mode' => $request->dark_mode
-            ]
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Product created successfully',
+                'data' => $product->load('category')
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create product: ' . $e->getMessage()
+            ], 500);
+        }
     }
+
+    public function transactions(Request $request)
+    {
+        // ... existing logic ...
+        // To reuse logic, we could refactor filters into a scope or repository,
+        // but for now, we keep it here for the view view.
+        // THE EXPORT LOGIC IS HANDLED IN A SEPARATE METHOD using the Export class which DUPLICATES logic for now,
+        // or re-uses a shared query builder if we refactored.
+        // Since TransactionExport constructs its own query based on request, we just pass request.
+
+        // Start with base query with relationships
+        $query = Transaction::with(['order']);
+
+        // Filter by payment method
+        if ($request->filled('payment_method')) {
+            $query->where('payment_method', $request->payment_method);
+        }
+
+        // Filter by payment status
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+
+        // Filter by date range
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Filter by amount range
+        if ($request->filled('amount_min')) {
+            $query->where('amount', '>=', $request->amount_min);
+        }
+        if ($request->filled('amount_max')) {
+            $query->where('amount', '<=', $request->amount_max);
+        }
+
+        // Search by transaction number or order number
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('transaction_number', 'like', "%{$search}%")
+                    ->orWhereHas('order', function ($q) use ($search) {
+                        $q->where('order_number', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Order by created_at descending (newest first) and paginate
+        $transactions = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+
+        // Calculate statistics
+        $totalTransactions = Transaction::count();
+        $totalAmount = Transaction::where('payment_status', 'paid')->sum('amount');
+        $pendingTransactions = Transaction::where('payment_status', 'pending')->count();
+        $todayTransactions = Transaction::whereDate('created_at', today())->count();
+
+        return view('admin.transactions', compact(
+            'transactions',
+            'totalTransactions',
+            'totalAmount',
+            'pendingTransactions',
+            'todayTransactions'
+        ))->with('active', 'transactions');
+    }
+
+    public function exportTransactions(Request $request)
+    {
+        return Excel::download(new TransactionExport($request), 'transactions-' . now()->format('Y-m-d_H-i') . '.xlsx');
+    }
+
+    /**
+     * Generate kitchen receipt PDF for an order
+     */
+    public function printKitchenReceipt($orderNumber)
+    {
+        // Find order with items and relations
+        $order = Order::where('order_number', $orderNumber)
+            ->with(['orderItems.product.category'])
+            ->firstOrFail();
+
+        // Generate PDF
+        return Pdf::view('pdf.kitchen-receipt', ['order' => $order])
+            ->format('a4')
+            ->name('kitchen-receipt-' . $order->order_number . '.pdf');
+    }
+
 
     /**
      * Show the form for creating a new resource.

@@ -38,7 +38,7 @@
         <div class="flex-1 overflow-y-auto px-4 pb-8 no-scrollbar">
             <!-- Timer Section -->
             <div class="text-center mb-6 mt-2">
-                <p class="text-gray-600 font-semibold mb-1">Complete payment in</p>
+                <p class="text-gray-600 font-semibold mb-1">Selesaikan pembayaran dalam</p>
                 <div class="text-3xl font-bold text-gray-900" id="countdownTimer">09:37</div>
             </div>
 
@@ -53,7 +53,7 @@
                         alt="GPN" class="h-8 object-contain">
                 </div>
 
-                <h2 class="font-bold text-gray-900 text-lg mb-4 text-center">Warung Bali Sangeh - Centro</h2>
+                <h2 class="font-bold text-gray-900 text-lg mb-4 text-center">Warung Bali Sangeh</h2>
 
                 <!-- QR Code Container -->
                 <div class="relative w-64 h-64 bg-gray-50 mb-6 p-2">
@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="text-center w-full">
-                    <p class="text-gray-500 text-sm mb-1">Payment Total</p>
+                    <p class="text-gray-500 text-sm mb-1">Total Pembayaran</p>
                     <p id="totalPaymentDisplay" class="text-2xl font-bold text-gray-900">Rp0</p>
                 </div>
             </div>
@@ -79,7 +79,7 @@
             <div class="flex gap-3 mb-8">
                 <button id="checkPaymentBtn"
                     class="flex-1 bg-[#f05a28] hover:bg-[#d94a1c] text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Check Payment Status
+                    Cek Status Pembayaran
                 </button>
                 <button
                     class="px-4 py-3 border border-orange-200 rounded-xl text-[#f05a28] hover:bg-orange-50 transition-colors">
@@ -93,7 +93,7 @@
 
             <!-- How to Pay Section -->
             <div class="mb-8">
-                <h3 class="font-bold text-gray-900 text-lg mb-4">How to Pay:</h3>
+                <h3 class="font-bold text-gray-900 text-lg mb-4">Cara Pembayaran:</h3>
 
                 <!-- Tabs -->
                 <div class="flex border-b border-gray-200 mb-6">
@@ -105,7 +105,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
                         </svg>
-                        Pay with the same phone
+                        Bayar dengan HP ini
                     </button>
                     <button class="flex-1 pb-3 text-gray-400 font-medium flex items-center justify-center gap-2 tab-btn"
                         data-target="other-phone">
@@ -114,7 +114,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
                         </svg>
-                        Pay with other phone
+                        Bayar dengan HP Lain
                     </button>
                 </div>
 
@@ -131,8 +131,8 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-gray-800 leading-snug"><span class="font-bold">1. Click</span> the download
-                                button to save image / screen capture QRIS code</p>
+                            <p class="text-gray-800 leading-snug"><span class="font-bold">1. Klik</span> tombol download
+                                untuk menyimpan gambar / layar QRIS code</p>
                         </div>
                     </div>
                     <!-- Step 2 -->
@@ -146,8 +146,8 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-gray-800 leading-snug"><span class="font-bold">2. Open QR payment</span> in
-                                your m-banking or e-wallet</p>
+                            <p class="text-gray-800 leading-snug"><span class="font-bold">2. Buka QR payment</span> di
+                                m-banking atau e-wallet</p>
                         </div>
                     </div>
                     <!-- Step 3 -->
@@ -161,8 +161,8 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-gray-800 leading-snug"><span class="font-bold">3. Upload</span> the QR Code
-                                image/screen capture</p>
+                            <p class="text-gray-800 leading-snug"><span class="font-bold">3. Upload</span> QR Code
+                                foto/layar tangkapan</p>
                         </div>
                     </div>
                     <!-- Step 4 -->
@@ -176,8 +176,9 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-gray-800 leading-snug"><span class="font-bold">4. Check</span> your
-                                transaction and make a payment</p>
+                            <p class="text-gray-800 leading-snug"><span class="font-bold">4. Cek</span> menu transaksi
+                                QRIS lalu
+                                lakukan pembayaran</p>
                         </div>
                     </div>
                     <!-- Step 5 -->
@@ -191,15 +192,15 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-gray-800 leading-snug">5. Click <span class="font-bold">Check Payment
-                                    Status</span></p>
+                            <p class="text-gray-800 leading-snug">5. <span class="font-bold">Klik</span> tombol
+                                "Cek Status Pembayaran"</p>
                         </div>
                     </div>
                 </div>
 
                 <div id="other-phone" class="tab-panel hidden space-y-6">
                     <div class="p-4 bg-gray-50 rounded-xl text-center text-gray-500">
-                        Scan the QR code displayed above with your other device's payment app.
+                        Scan QRIS code di layar dengan HP yang lain
                     </div>
                 </div>
             </div>

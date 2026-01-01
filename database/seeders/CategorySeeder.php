@@ -15,7 +15,6 @@ class CategorySeeder extends Seeder
         $categories = [
             ['name' => 'Makanan'],
             ['name' => 'Minuman'],
-            ['name' => 'Snack'],
         ];
 
         foreach ($categories as $category) {

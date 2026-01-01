@@ -149,7 +149,7 @@
                     </button>
                     <button onclick="window.location.href = '/order?mode=takeaway';"
                         class="w-full bg-white border border-gray-200 text-gray-800 font-bold py-4 rounded-xl shadow-sm hover:border-gray-300 hover:bg-gray-50 transition active:scale-[0.99]">
-                        Bawa Pulang
+                        Takeaway
                     </button>
                 </div>
             </div>

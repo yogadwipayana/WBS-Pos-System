@@ -24,7 +24,7 @@
     <div class="w-full max-w-[500px] bg-white min-h-screen relative shadow-2xl flex flex-col">
         <!-- Sticky Header -->
         <div class="sticky top-0 z-50 bg-white border-b border-gray-100 px-4 py-3 flex items-center mb-2">
-            <h1 class="font-bold text-lg text-gray-800 w-full text-center">Order Status</h1>
+            <h1 class="font-bold text-lg text-gray-800 w-full text-center">Status Pesanan</h1>
         </div>
 
         <div class="flex-1 overflow-y-auto px-4 pb-8 no-scrollbar">
@@ -37,36 +37,36 @@
                             d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <h2 class="font-bold text-gray-900 text-2xl mb-2 text-center">Payment Successful!</h2>
-                <p class="text-gray-500 text-center">Your order has been confirmed</p>
+                <h2 class="font-bold text-gray-900 text-2xl mb-2 text-center">Pembayaran berhasil!</h2>
+                <p class="text-gray-500 text-center">Pesanan Anda telah berhasil dikonfirmasi</p>
             </div>
 
             <!-- Order Details Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-                <h3 class="font-bold text-gray-900 text-lg mb-4">Order Details</h3>
+                <h3 class="font-bold text-gray-900 text-lg mb-4">Detail Pesanan</h3>
 
                 <!-- Order Number -->
                 <div class="flex justify-between items-center mb-3 pb-3 border-b border-gray-100">
-                    <span class="text-gray-600">Order Number</span>
+                    <span class="text-gray-600">Nomor Pesanan</span>
                     <span id="orderNumber" class="font-semibold text-gray-900">-</span>
                 </div>
 
                 <!-- Customer Name -->
                 <div class="flex justify-between items-center mb-3 pb-3 border-b border-gray-100">
-                    <span class="text-gray-600">Customer Name</span>
+                    <span class="text-gray-600">Nama Pelanggan</span>
                     <span id="customerName" class="font-semibold text-gray-900">-</span>
                 </div>
 
                 <!-- Order Type -->
                 <div class="flex justify-between items-center mb-3 pb-3 border-b border-gray-100">
-                    <span class="text-gray-600">Order Type</span>
+                    <span class="text-gray-600">Jenis Pesanan</span>
                     <span id="orderType" class="font-semibold text-gray-900">-</span>
                 </div>
 
                 <!-- Table Number (if dine-in) -->
                 <div id="tableNumberRow"
                     class="flex justify-between items-center mb-3 pb-3 border-b border-gray-100 hidden">
-                    <span class="text-gray-600">Table Number</span>
+                    <span class="text-gray-600">Nomor Meja</span>
                     <span id="tableNumber" class="font-semibold text-gray-900">-</span>
                 </div>
 
@@ -78,14 +78,14 @@
 
                 <!-- Total Amount -->
                 <div class="flex justify-between items-center">
-                    <span class="text-gray-600 font-semibold">Total Amount</span>
+                    <span class="text-gray-600 font-semibold">Total</span>
                     <span id="totalAmount" class="font-bold text-xl text-gray-900">Rp0</span>
                 </div>
             </div>
 
             <!-- Notes (if any) -->
             <div id="notesSection" class="bg-orange-50 rounded-xl p-4 mb-6 hidden">
-                <h4 class="font-semibold text-gray-900 mb-2">Notes:</h4>
+                <h4 class="font-semibold text-gray-900 mb-2">Catatan:</h4>
                 <p id="orderNotes" class="text-gray-700 text-sm leading-relaxed"></p>
             </div>
 

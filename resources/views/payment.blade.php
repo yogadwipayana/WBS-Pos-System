@@ -52,11 +52,11 @@
 
             <!-- Customer Information -->
             <div>
-                <h2 class="font-bold text-gray-900 mb-4">Customer Information</h2>
+                <h2 class="font-bold text-gray-900 mb-4">Informasi Pelanggan</h2>
                 <form class="space-y-4">
                     <!-- Full Name -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap<span
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama<span
                                 class="text-red-500">*</span></label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -68,13 +68,14 @@
                             </div>
                             <input id="fullNameInput" type="text"
                                 class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 placeholder-gray-400 transition-colors"
-                                placeholder="Full Name">
+                                placeholder="Nama">
                         </div>
                     </div>
 
                     <!-- Phone Number -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nomor Telepon (untuk fitur mendatang
+                    {{-- <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nomor Telepon (untuk fitur
+                            mendatang
                             promos)</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -105,7 +106,7 @@
                                 class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 placeholder-gray-400 transition-colors"
                                 placeholder="Email">
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Table Number -->
                     <div id="tableNumberField">
@@ -144,7 +145,7 @@
                                     d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
                             </svg>
                         </div>
-                        <span class="font-semibold text-sm">Bayar Online (QRIS)</span>
+                        <span class="font-semibold text-sm">Bayar Online</span>
                         <!-- Checkmark for selected state -->
                         <div class="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 border-2 border-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
@@ -175,7 +176,7 @@
 
             <!-- Complete Payment Section (Online Only) -->
             <div id="onlinePaymentSection">
-                <h2 class="font-bold text-gray-900 mb-3">Complete Payment</h2>
+                <h2 class="font-bold text-gray-900 mb-3">Pembayaran Online</h2>
                 <div id="qrisOption"
                     class="border rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors">
                     <div class="flex items-center gap-3">
@@ -240,7 +241,7 @@
                 </div>
                 <!-- Text -->
                 <p class="text-gray-800 font-medium mb-6 leading-relaxed px-4">
-                    Let's add your name, it helps us confirm your order easily.
+                    Tambahkan nama Anda, ini membantu kami mengkonfirmasi pesanan Anda dengan mudah.
                 </p>
                 <!-- Button -->
                 <button id="closeValidationBtn"
@@ -270,7 +271,7 @@
                     </div>
                     <button id="mainPayBtn"
                         class="bg-[#f05a28] hover:bg-[#d94a1c] text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all active:scale-95 flex-1 ml-8 text-center">
-                        Pay
+                        Bayar
                     </button>
                 </div>
             </div>
@@ -304,10 +305,10 @@
 
                     // Set order type text
                     if (table) {
-                        orderTypeText.textContent = `Dine In - Table ${table}`;
+                        orderTypeText.textContent = `Makan di Tempat - Meja ${table}`;
                         tableNumberInput.value = table;
                     } else {
-                        orderTypeText.textContent = 'Dine In';
+                        orderTypeText.textContent = 'Makan di Tempat';
                     }
                 } else {
                     // Hide table number field for other modes
@@ -316,7 +317,7 @@
                     if (mode === 'takeaway') {
                         orderTypeText.textContent = 'Takeaway';
                     } else {
-                        orderTypeText.textContent = 'Pick Up'; // Default
+                        orderTypeText.textContent = 'Takeaway'; // Default
                     }
                 }
             }
@@ -401,7 +402,7 @@
                 onlineSection.classList.remove('hidden');
                 cashierSection.classList.add('hidden');
                 cashierSection.classList.remove('flex');
-                mainPayBtn.textContent = 'Pay';
+                mainPayBtn.textContent = 'Bayar';
 
                 // Uncheck QRIS when switching to online (user must select it)
                 if (qrisRadio) {
@@ -417,7 +418,7 @@
                 onlineSection.classList.add('hidden');
                 cashierSection.classList.remove('hidden');
                 cashierSection.classList.add('flex');
-                mainPayBtn.textContent = 'Pay at Cashier';
+                mainPayBtn.textContent = 'Bayar di Kasir';
                 updatePayButtonState();
             });
 

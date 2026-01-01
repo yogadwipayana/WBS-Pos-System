@@ -51,9 +51,9 @@
             <!-- Order Type -->
             <div
                 class="w-full bg-orange-50 border border-orange-400 rounded-lg px-4 py-2 flex items-center justify-between">
-                <span class="text-gray-700 text-sm font-medium">Order Type</span>
+                <span class="text-gray-700 text-sm font-medium">Jenis Pesanann</span>
                 <div class="flex items-center gap-1">
-                    <span id="orderTypeText" class="font-bold text-gray-900 text-sm">Pick Up</span>
+                    <span id="orderTypeText" class="font-bold text-gray-900 text-sm">Ambil Sekarang</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-4 h-4 text-gray-800">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -63,7 +63,7 @@
 
             <!-- Related Menu -->
             <div>
-                <h2 class="font-bold text-gray-900 mb-3">Related Menu</h2>
+                <h2 class="font-bold text-gray-900 mb-3">Rekomendasi Menu</h2>
                 <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
                     <!-- Item 1 -->
                     <div
@@ -74,7 +74,7 @@
                             <h3 class="text-xs font-bold text-gray-800 leading-tight mb-1">MIE GACOAN LV 3</h3>
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-bold text-gray-600">Rp10.909</span>
-                                <button class="text-orange-500">
+                                <button class="text-orange-500" onclick="window.history.back()">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="2" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -92,10 +92,10 @@
             <!-- Ordered Items -->
             <div>
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="font-bold text-gray-900">Ordered Items (<span id="orderItemCount">0</span>)</h2>
+                    <h2 class="font-bold text-gray-900">Menu yang Dipesan (<span id="orderItemCount">0</span>)</h2>
                     <button onclick="window.history.back()"
                         class="px-3 py-1 border border-orange-400 text-orange-500 text-xs font-bold rounded-lg hover:bg-orange-50 transition-colors">
-                        + Add Item
+                        + Tambah Menu
                     </button>
                 </div>
 
@@ -113,28 +113,25 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                     </svg>
-                    <span class="text-sm italic text-gray-400 group-hover:text-orange-500">Add another notes</span>
+                    <span class="text-sm italic text-gray-400 group-hover:text-orange-500">Tambah Catatan</span>
                 </div>
             </div>
 
             <!-- Payment Details -->
             <div class="border border-gray-200 rounded-xl p-4 shadow-sm bg-white">
-                <h3 class="font-bold text-gray-800 mb-3 text-center">Payment Details</h3>
+                <h3 class="font-bold text-gray-800 mb-3 text-center">Detail Pembayaran</h3>
                 <div class="space-y-2 text-sm">
                     <div class="flex justify-between text-gray-600">
                         <span>Subtotal <span id="menuCountText" class="text-gray-400">(0 menu)</span></span>
                         <span id="subtotalPrice" class="font-bold text-gray-800">Rp0</span>
                     </div>
                     <div class="flex justify-between text-gray-600 border-b border-dashed border-gray-200 pb-2">
-                        <span>Rounding</span>
+                        <span>Pembulatan</span>
                         <span id="roundingPrice" class="font-bold text-gray-800">Rp0</span>
                     </div>
                     <div class="flex justify-between text-gray-600 pt-1 border-b border-dashed border-gray-200 pb-2">
-                        <span>Other fees</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4 ml-1 inline text-gray-400">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        </svg>
+                        <span>Pajak 10%</span>
+
                         <span id="otherFeesPrice" class="font-bold text-gray-800">Rp0</span>
                     </div>
                     <div class="flex justify-between items-center pt-2">
@@ -151,12 +148,12 @@
                 class="w-full max-w-[500px] bg-white border-t border-gray-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pointer-events-auto rounded-t-2xl">
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-xs text-gray-500 font-semibold mb-0.5">Total Payment</p>
+                        <p class="text-xs text-gray-500 font-semibold mb-0.5">Total Pembayaran</p>
                         <p id="bottomTotalPrice" class="text-xl font-bold text-gray-900 leading-none">Rp0</p>
                     </div>
                     <button onclick="goToPayment()"
                         class="bg-[#f05a28] hover:bg-[#d94a1c] text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-all active:scale-95">
-                        Continue to Payment
+                        Lanjutkan ke Pembayaran
                     </button>
                 </div>
             </div>
@@ -173,7 +170,7 @@
             class="w-full max-w-[500px] bg-white rounded-t-2xl shadow-2xl pointer-events-auto flex flex-col max-h-[90vh]">
             <!-- Header -->
             <div class="flex items-center justify-between p-4 border-b border-gray-100">
-                <h3 class="font-bold text-lg text-gray-900">Other Notes</h3>
+                <h3 class="font-bold text-lg text-gray-900">Tambah Catatan</h3>
                 <button id="closeNotesBtn" class="p-1 hover:bg-gray-100 rounded-full transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-6 h-6 text-gray-800">
@@ -186,14 +183,14 @@
             <div class="p-4">
                 <textarea id="notesInput"
                     class="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none resize-none text-gray-700"
-                    placeholder="Customer Notes"></textarea>
+                    placeholder="Catatan"></textarea>
             </div>
 
             <!-- Footer -->
             <div class="p-4 border-t border-gray-100">
                 <button id="saveNotesBtn"
                     class="w-full bg-[#f05a28] hover:bg-[#d94a1c] text-white font-bold py-3 rounded-lg shadow-md transition-all active:scale-95">
-                    Add
+                    Tambah
                 </button>
             </div>
         </div>
@@ -211,14 +208,14 @@
             if (orderTypeText) {
                 if (mode === 'dinein') {
                     if (table) {
-                        orderTypeText.textContent = `Dine In - Table ${table}`;
+                        orderTypeText.textContent = `Makan di Tempat - Meja ${table}`;
                     } else {
-                        orderTypeText.textContent = 'Dine In';
+                        orderTypeText.textContent = 'Makan di Tempat';
                     }
                 } else if (mode === 'takeaway') {
                     orderTypeText.textContent = 'Takeaway';
                 } else {
-                    orderTypeText.textContent = 'Pick Up'; // Default
+                    orderTypeText.textContent = 'Takeaway'; // Default
                 }
             }
 
@@ -256,12 +253,7 @@
                         </div>
                         
                         <div class="flex items-center gap-1 text-gray-400 mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                            </svg>
-                            <span class="text-xs italic">No notes yet</span>
+                            
                         </div>
                         
                         <div class="flex items-center justify-between">

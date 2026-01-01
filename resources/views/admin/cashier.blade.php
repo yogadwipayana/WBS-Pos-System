@@ -1,33 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.admin')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashier - Warung Bali Sangeh</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+@section('title', 'Cashier')
 
-    <!-- Theme Provider -->
-    <x-theme-provider />
-
-    <style>
-        body {
-            font-family: 'Outfit', sans-serif;
-        }
-    </style>
-</head>
-
-<body class="bg-gray-50 text-gray-900">
-
-    <div class="flex h-screen overflow-hidden">
-
-        <!-- Sidebar Component -->
-        <x-admin-sidebar active="cashier" />
-
-
-        <!-- Main Content -->
-        <main class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50">
+@section('content')
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50">
+            <div class="p-4">
+                <x-alert />
+            </div>
             <!-- Header -->
             <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-10">
                 <h1 class="text-xl font-bold text-gray-900">Cashier</h1>
@@ -184,8 +163,9 @@
                 </div>
             </div>
         </main>
-    </div>
+@endsection
 
+@push('scripts')
     <script>
         let currentOrderNumber = null;
 
@@ -401,6 +381,4 @@
             });
         });
     </script>
-</body>
-
-</html>
+@endpush

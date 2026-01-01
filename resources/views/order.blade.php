@@ -60,8 +60,8 @@
             <div
                 class="bg-white border rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors">
                 <div>
-                    <h2 class="font-bold text-gray-900">Warung Bali Sangeh - Centro</h2>
-                    <p class="text-sm text-gray-500 mt-1">Open today, 08:00-22:00</p>
+                    <h2 class="font-bold text-gray-900">Warung Bali Sangeh</h2>
+                    <p class="text-sm text-gray-500 mt-1">Buka Setiap Hari, 08:00-22:00</p>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                     stroke="currentColor" class="w-5 h-5 text-gray-400">
@@ -72,16 +72,16 @@
             <!-- Dine In Banner (Hidden by default) -->
             <div id="dineInBanner"
                 class="bg-orange-50 border border-orange-100 rounded-xl p-4 shadow-sm text-center hidden">
-                <span id="tableDisplay" class="text-gray-900 font-bold text-lg">Table Number: 1</span>
+                <span id="tableDisplay" class="text-gray-900 font-bold text-lg">Nomor Meja: 1</span>
             </div>
 
             <!-- Order Type Selector (Default / Takeaway) -->
             <div id="takewaySelector" class="border rounded-xl p-4 shadow-sm bg-white">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="text-gray-700 font-medium">Order Type</span>
+                    <span class="text-gray-700 font-medium">Tipe Order</span>
                     <button
                         class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                        Pick Up
+                        Takeaway
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-4 h-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -97,7 +97,7 @@
                                 d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                         </svg>
                     </div>
-                    <span class="font-bold text-gray-900">Pick Up Now</span>
+                    <span class="font-bold text-gray-900">Ambil Sekarang</span>
                 </div>
             </div>
         </div>
@@ -105,14 +105,14 @@
         <!-- Sticky Category Nav -->
         <div class="sticky top-[50px] bg-white z-40 border-b border-gray-200 shadow-sm">
             <div class="flex overflow-x-auto no-scrollbar py-3 px-4 gap-6" id="categoryNav">
-                <button data-target="makanan"
-                    class="nav-item whitespace-nowrap font-bold text-red-600 border-b-2 border-red-600 pb-2 -mb-3.5 transition-colors duration-200">
-                    MAKANAN
-                </button>
-                <button data-target="minuman"
-                    class="nav-item whitespace-nowrap font-semibold text-gray-500 hover:text-gray-900 pb-2 -mb-3.5 transition-colors duration-200">
-                    MINUMAN
-                </button>
+                @forelse ($categories as $category)
+                    <button data-target="{{ Str::slug($category->name) }}"
+                        class="nav-item whitespace-nowrap pb-2 -mb-3.5 transition-colors duration-200 {{ $loop->first ? 'font-bold text-red-600 border-b-2 border-red-600' : 'font-semibold text-gray-500 hover:text-gray-900' }}">
+                        {{ strtoupper($category->name) }}
+                    </button>
+                @empty
+                    <div class="text-sm text-gray-500 py-2">Kategori tidak tersedia</div>
+                @endforelse
             </div>
         </div>
 
@@ -125,135 +125,57 @@
             </div> --}}
 
             <div class="space-y-8">
-                <!-- MAKANAN Section -->
-                <section id="makanan" class="scroll-mt-[160px]">
-                    <h3 id=""
-                        class="font-bold text-gray-700 tracking-wide uppercase transition-all duration-300">MAKANAN
-                    </h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <!-- Item 1 -->
-                        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex flex-col"
-                            data-item-id="mie-iblis-1" data-item-name="MIE IBLIS" data-item-price="10500">
-                            <div class="rounded-lg overflow-hidden h-32 w-full mb-3 relative">
-                                <img src="https://esb-order.oss-ap-southeast-5.aliyuncs.com/images/mbss/menu/MNU_3485_20250519193451_thumb.webp"
-                                    alt="Menu Item" class="w-full h-full object-cover">
-                            </div>
-                            <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">MIE IBLIS</h4>
-                            <p class="text-gray-900 font-bold text-sm mb-3">Rp10.500,0</p>
+                @forelse ($categories as $category)
+                    <section id="{{ Str::slug($category->name) }}" class="scroll-mt-[160px]">
+                        <h3 class="font-bold text-gray-700 tracking-wide uppercase transition-all duration-300">
+                            {{ strtoupper($category->name) }}
+                        </h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            @forelse ($category->products as $product)
+                                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex flex-col"
+                                    data-item-id="{{ $product->id }}" data-item-name="{{ $product->name }}"
+                                    data-item-price="{{ $product->price }}">
+                                    <div class="rounded-lg overflow-hidden h-32 w-full mb-3 relative">
+                                        <img src="{{ $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset('storage/' . $product->image)) : 'https://esb-order.oss-ap-southeast-5.aliyuncs.com/images/mbss/menu/MNU_3485_20250519193451_thumb.webp' }}"
+                                            alt="{{ $product->name }}" class="w-full h-full object-cover">
+                                    </div>
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">{{ $product->name }}
+                                    </h4>
+                                    <p class="text-gray-900 font-bold text-sm mb-3">
+                                        Rp{{ number_format($product->price, 0, ',', '.') }}</p>
 
-                            <!-- Add Button -->
-                            <button
-                                class="add-btn w-full py-1.5 border border-red-500 text-red-500 rounded-full font-semibold text-sm hover:bg-red-50 transition-colors mt-auto">
-                                Add
-                            </button>
+                                    <!-- Add Button -->
+                                    <button
+                                        class="add-btn w-full py-1.5 border border-red-500 text-red-500 rounded-full font-semibold text-sm hover:bg-red-50 transition-colors mt-auto">
+                                        Add
+                                    </button>
 
-                            <!-- Quantity Selector (Hidden by default) -->
-                            <div
-                                class="quantity-selector hidden w-full flex items-center justify-between border border-red-500 rounded-full px-3 py-1.5 mt-auto">
-                                <button
-                                    class="qty-minus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">
-                                    −
-                                </button>
-                                <span class="qty-display font-semibold text-gray-900 text-sm">1</span>
-                                <button
-                                    class="qty-plus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">
-                                    +
-                                </button>
-                            </div>
+                                    <!-- Quantity Selector (Hidden by default) -->
+                                    <div
+                                        class="quantity-selector hidden w-full flex items-center justify-between border border-red-500 rounded-full px-3 py-1.5 mt-auto">
+                                        <button
+                                            class="qty-minus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">
+                                            −
+                                        </button>
+                                        <span class="qty-display font-semibold text-gray-900 text-sm">1</span>
+                                        <button
+                                            class="qty-plus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="col-span-2 text-center text-gray-500 py-4 italic">
+                                    Belum ada produk di kategori ini.
+                                </div>
+                            @endforelse
                         </div>
-                        <!-- Item 2 -->
-                        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex flex-col"
-                            data-item-id="mie-angel-1" data-item-name="MIE ANGEL" data-item-price="10500">
-                            <div class="rounded-lg overflow-hidden h-32 w-full mb-3 relative">
-                                <img src="https://esb-order.oss-ap-southeast-5.aliyuncs.com/images/mbss/menu/MNU_3485_20250519193451_thumb.webp"
-                                    alt="Menu Item" class="w-full h-full object-cover">
-                            </div>
-                            <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">MIE ANGEL</h4>
-                            <p class="text-gray-900 font-bold text-sm mb-3">Rp10.500,0</p>
-                            <button
-                                class="add-btn w-full py-1.5 border border-red-500 text-red-500 rounded-full font-semibold text-sm hover:bg-red-50 transition-colors mt-auto">Add</button>
-                            <div
-                                class="quantity-selector hidden w-full flex items-center justify-between border border-red-500 rounded-full px-3 py-1.5 mt-auto">
-                                <button
-                                    class="qty-minus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">−</button>
-                                <span class="qty-display font-semibold text-gray-900 text-sm">1</span>
-                                <button
-                                    class="qty-plus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">+</button>
-                            </div>
-                        </div>
-
+                    </section>
+                @empty
+                    <div class="text-center text-gray-500 py-10">
+                        Menu belum tersedia.
                     </div>
-                </section>
-
-                <!-- MINUMAN Section -->
-                <section id="minuman" class="scroll-mt-[160px]">
-                    <h3 id=""
-                        class="font-bold text-gray-700 tracking-wide uppercase transition-all duration-300">MINUMAN
-                    </h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <!-- Item 3 -->
-                        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex flex-col"
-                            data-item-id="es-teklek-1" data-item-name="ES TEKLEK" data-item-price="7500">
-                            <div class="rounded-lg overflow-hidden h-32 w-full mb-3 relative">
-                                <img src="https://esb-order.oss-ap-southeast-5.aliyuncs.com/images/mbss/menu/MNU_3485_20250519193451_thumb.webp"
-                                    alt="Menu Item" class="w-full h-full object-cover">
-                            </div>
-                            <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">ES TEKLEK</h4>
-                            <p class="text-gray-900 font-bold text-sm mb-3">Rp7.500,0</p>
-                            <button
-                                class="add-btn w-full py-1.5 border border-red-500 text-red-500 rounded-full font-semibold text-sm hover:bg-red-50 transition-colors mt-auto">Add</button>
-                            <div
-                                class="quantity-selector hidden w-full flex items-center justify-between border border-red-500 rounded-full px-3 py-1.5 mt-auto">
-                                <button
-                                    class="qty-minus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">−</button>
-                                <span class="qty-display font-semibold text-gray-900 text-sm">1</span>
-                                <button
-                                    class="qty-plus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">+</button>
-                            </div>
-                        </div>
-                        <!-- Item 4 -->
-                        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex flex-col"
-                            data-item-id="es-sluku-bathok-1" data-item-name="ES SLUKU BATHOK" data-item-price="8500">
-                            <div class="rounded-lg overflow-hidden h-32 w-full mb-3 relative">
-                                <img src="https://esb-order.oss-ap-southeast-5.aliyuncs.com/images/mbss/menu/MNU_3485_20250519193451_thumb.webp"
-                                    alt="Menu Item" class="w-full h-full object-cover">
-                            </div>
-                            <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">ES SLUKU BATHOK</h4>
-                            <p class="text-gray-900 font-bold text-sm mb-3">Rp8.500,0</p>
-                            <button
-                                class="add-btn w-full py-1.5 border border-red-500 text-red-500 rounded-full font-semibold text-sm hover:bg-red-50 transition-colors mt-auto">Add</button>
-                            <div
-                                class="quantity-selector hidden w-full flex items-center justify-between border border-red-500 rounded-full px-3 py-1.5 mt-auto">
-                                <button
-                                    class="qty-minus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">−</button>
-                                <span class="qty-display font-semibold text-gray-900 text-sm">1</span>
-                                <button
-                                    class="qty-plus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">+</button>
-                            </div>
-                        </div>
-                        <!-- Item 5 -->
-                        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex flex-col"
-                            data-item-id="es-gobak-sodor-1" data-item-name="ES GOBAK SODOR" data-item-price="9545">
-                            <div class="rounded-lg overflow-hidden h-32 w-full mb-3 relative">
-                                <img src="https://esb-order.oss-ap-southeast-5.aliyuncs.com/images/mbss/menu/MNU_3485_20250519193451_thumb.webp"
-                                    alt="Menu Item" class="w-full h-full object-cover">
-                            </div>
-                            <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">ES GOBAK SODOR</h4>
-                            <p class="text-gray-900 font-bold text-sm mb-3">Rp9.545,5</p>
-                            <button
-                                class="add-btn w-full py-1.5 border border-red-500 text-red-500 rounded-full font-semibold text-sm hover:bg-red-50 transition-colors mt-auto">Add</button>
-                            <div
-                                class="quantity-selector hidden w-full flex items-center justify-between border border-red-500 rounded-full px-3 py-1.5 mt-auto">
-                                <button
-                                    class="qty-minus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">−</button>
-                                <span class="qty-display font-semibold text-gray-900 text-sm">1</span>
-                                <button
-                                    class="qty-plus w-6 h-6 flex items-center justify-center text-red-500 font-bold hover:bg-red-50 rounded-full">+</button>
-                            </div>
-                        </div>
-
-                    </div>
-                </section>
+                @endforelse
             </div>
         </div>
     </div>
@@ -299,30 +221,31 @@
             <!-- Header -->
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-gray-900 text-lg">Dine In</h3>
-                <button id="closeModalBtn" class="p-1 hover:bg-gray-100 rounded-full transition-colors">
+                {{-- <button id="closeModalBtn" disabled class="p-1 hover:bg-gray-100 rounded-full transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-6 h-6 text-gray-500">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                </button>
+                </button> --}}
             </div>
 
             <!-- Content -->
             <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Table Number<span
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nomor Meja<span
                         class="text-red-500">*</span></label>
                 <div class="relative">
                     <input type="number" id="tableNumberInput"
                         class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
-                        placeholder="Enter your table number">
+                        placeholder="Masukkan Nomor Meja">
                 </div>
+                <p id="tableValidationError" class="text-red-500 text-sm mt-2 hidden">Nomor meja wajib diisi!</p>
             </div>
 
             <!-- Footer -->
             <button id="saveTableBtn"
                 class="w-full bg-gray-200 text-gray-500 font-bold py-3 rounded-xl shadow-sm transition-all text-center cursor-not-allowed"
                 disabled>
-                Save
+                Simpan
             </button>
         </div>
     </div>
@@ -391,7 +314,7 @@
                 // If table parameter exists, pre-fill and don't show modal
                 if (table) {
                     if (input) input.value = table;
-                    if (tableDisplay) tableDisplay.textContent = 'Table Number: ' + table;
+                    if (tableDisplay) tableDisplay.textContent = 'Nomor Meja: ' + table;
                 } else {
                     openModal();
                 }
@@ -404,14 +327,22 @@
             if (closeBtn) {
                 closeBtn.addEventListener('click', closeModal);
             }
+            // Prevent closing modal by clicking overlay in dine-in mode without table number
             if (overlay) {
-                overlay.addEventListener('click', closeModal);
+                overlay.addEventListener('click', (e) => {
+                    if (mode === 'dinein' && input && !input.value) {
+                        // Do nothing - prevent closing
+                        e.stopPropagation();
+                    } else {
+                        closeModal();
+                    }
+                });
             }
             if (saveBtn) {
                 saveBtn.addEventListener('click', () => {
                     // Update the banner with the input value
                     if (input && input.value && tableDisplay) {
-                        tableDisplay.textContent = 'Table Number: ' + input.value;
+                        tableDisplay.textContent = 'Nomor Meja: ' + input.value;
                     }
                     closeModal();
                 });
@@ -635,6 +566,28 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const currentMode = urlParams.get('mode') || 'takeaway';
                 const tableInput = document.getElementById('tableNumberInput');
+                const validationError = document.getElementById('tableValidationError');
+
+                // Validate table number for dine-in mode
+                if (currentMode === 'dinein') {
+                    if (!tableInput || !tableInput.value || tableInput.value.trim() === '') {
+                        // Show modal if not visible
+                        openModal();
+
+                        // Show validation error
+                        if (validationError) {
+                            validationError.classList.remove('hidden');
+                        }
+
+                        // Focus on input
+                        if (tableInput) {
+                            tableInput.focus();
+                            tableInput.classList.add('border-red-500', 'ring-1', 'ring-red-500');
+                        }
+
+                        return; // Prevent checkout
+                    }
+                }
 
                 // Build query parameters
                 let queryParams = `mode=${currentMode}`;
