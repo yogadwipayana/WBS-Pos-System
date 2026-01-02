@@ -86,11 +86,11 @@
                         </svg>
                         Filter
                         @if (request()->hasAny(['status', 'order_type', 'date_from', 'date_to']))
-                            <span class="ml-1 w-2 h-2 bg-primary rounded-full"></span>
+                            <span class="ml-1 w-2 h-2 bg-orange-600 rounded-full"></span>
                         @endif
                     </button>
                     {{-- <button
-                        class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-xl font-semibold shadow-sm text-sm flex items-center gap-2">
+                        class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-xl font-semibold shadow-sm text-sm flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-4 h-4">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -261,7 +261,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <button onclick="viewOrderDetail('{{ $order->order_number }}')"
-                                            class="text-primary hover:text-primary-dark transition-colors font-semibold">
+                                            class="text-orange-600 hover:text-orange-700 transition-colors font-semibold">
                                             View Details
                                         </button>
                                     </td>
@@ -313,7 +313,7 @@
                                 @foreach ($orders->getUrlRange(1, $orders->lastPage()) as $page => $url)
                                     @if ($page == $orders->currentPage())
                                         <span
-                                            class="px-4 py-2 text-sm font-medium text-white bg-primary border border-primary rounded-lg">
+                                            class="px-4 py-2 text-sm font-medium text-white bg-orange-600 border border-orange-600 rounded-lg">
                                             {{ $page }}
                                         </span>
                                     @else
@@ -371,7 +371,7 @@
 
                 <!-- Loading State -->
                 <div id="detailLoading" class="text-center py-12">
-                    <svg class="animate-spin h-12 w-12 text-primary mx-auto mb-4" xmlns="http://www.w3.org/2000/svg"
+                    <svg class="animate-spin h-12 w-12 text-orange-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                             stroke-width="4"></circle>
@@ -474,7 +474,7 @@
                             </div>
                             <div class="pt-3 border-t-2 border-orange-300 flex justify-between">
                                 <span class="text-lg font-bold text-gray-900">Total:</span>
-                                <span id="detailTotal" class="text-2xl font-bold text-primary"></span>
+                                <span id="detailTotal" class="text-2xl font-bold text-orange-600"></span>
                             </div>
                         </div>
                     </div>
@@ -524,35 +524,35 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-3">Order Status</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label
-                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-primary hover:bg-orange-50"
+                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-orange-600 hover:bg-orange-50"
                             onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="status[]" value="pending"
                                 {{ in_array('pending', request()->input('status', [])) ? 'checked' : '' }}
-                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-600">
                             <span class="ml-3 text-sm font-medium text-gray-700">Pending</span>
                         </label>
                         <label
-                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-primary hover:bg-orange-50"
+                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-orange-600 hover:bg-orange-50"
                             onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="status[]" value="preparing"
                                 {{ in_array('preparing', request()->input('status', [])) ? 'checked' : '' }}
-                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-600">
                             <span class="ml-3 text-sm font-medium text-gray-700">Preparing</span>
                         </label>
                         <label
-                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-primary hover:bg-orange-50"
+                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-orange-600 hover:bg-orange-50"
                             onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="status[]" value="ready"
                                 {{ in_array('ready', request()->input('status', [])) ? 'checked' : '' }}
-                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-600">
                             <span class="ml-3 text-sm font-medium text-gray-700">Ready</span>
                         </label>
                         <label
-                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-primary hover:bg-orange-50"
+                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-orange-600 hover:bg-orange-50"
                             onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="status[]" value="completed"
                                 {{ in_array('completed', request()->input('status', [])) ? 'checked' : '' }}
-                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-600">
                             <span class="ml-3 text-sm font-medium text-gray-700">Completed</span>
                         </label>
                     </div>
@@ -563,19 +563,19 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-3">Order Type</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label
-                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-primary hover:bg-orange-50"
+                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-orange-600 hover:bg-orange-50"
                             onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="order_type[]" value="dinein"
                                 {{ in_array('dinein', request()->input('order_type', [])) ? 'checked' : '' }}
-                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-600">
                             <span class="ml-3 text-sm font-medium text-gray-700">Dine In</span>
                         </label>
                         <label
-                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-primary hover:bg-orange-50"
+                            class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-orange-600 hover:bg-orange-50"
                             onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="order_type[]" value="takeaway"
                                 {{ in_array('takeaway', request()->input('order_type', [])) ? 'checked' : '' }}
-                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-600">
                             <span class="ml-3 text-sm font-medium text-gray-700">Take Away</span>
                         </label>
                     </div>
@@ -588,12 +588,12 @@
                         <div>
                             <label class="block text-xs text-gray-600 mb-1">From</label>
                             <input type="date" name="date_from" value="{{ request()->input('date_from') }}"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-600 mb-1">To</label>
                             <input type="date" name="date_to" value="{{ request()->input('date_to') }}"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600">
                         </div>
                     </div>
                 </div>
@@ -606,13 +606,13 @@
                             <label class="block text-xs text-gray-600 mb-1">Min Amount</label>
                             <input type="number" name="amount_min" value="{{ request()->input('amount_min') }}"
                                 placeholder="0"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-600 mb-1">Max Amount</label>
                             <input type="number" name="amount_max" value="{{ request()->input('amount_max') }}"
                                 placeholder="1000000"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600">
                         </div>
                     </div>
                 </div>
@@ -631,7 +631,7 @@
                         Cancel
                     </button>
                     <button id="applyFilters"
-                        class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors">
+                        class="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl transition-colors">
                         Apply Filters
                     </button>
                 </div>
@@ -823,9 +823,9 @@
 
             // Update visual state
             if (checkbox.checked) {
-                label.classList.add('border-primary', 'bg-orange-50');
+                label.classList.add('border-orange-600', 'bg-orange-50');
             } else {
-                label.classList.remove('border-primary', 'bg-orange-50');
+                label.classList.remove('border-orange-600', 'bg-orange-50');
             }
         }
 
@@ -834,7 +834,7 @@
             document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
                 const label = checkbox.closest('label');
                 if (label) {
-                    label.classList.add('border-primary', 'bg-orange-50');
+                    label.classList.add('border-orange-600', 'bg-orange-50');
                 }
             });
         });

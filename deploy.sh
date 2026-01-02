@@ -88,8 +88,8 @@ sleep 10
 
 # FIX #1: Set permissions inside container (not on host)
 echo "🔐 Setting permissions inside container..."
-docker compose exec -T app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-docker compose exec -T app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+docker compose exec -T app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/images
+docker compose exec -T app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/images
 
 # Install dependencies (needed because volume mount overwrites container)
 echo "📦 Installing Composer dependencies..."

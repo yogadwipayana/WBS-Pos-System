@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Order - Warung Bali Sangeh</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     @endif
     <style>
         body {
@@ -52,40 +52,41 @@
             <div
                 class="w-full bg-orange-50 border border-orange-400 rounded-lg px-4 py-2 flex items-center justify-between">
                 <span class="text-gray-700 text-sm font-medium">Jenis Pesanann</span>
-                <div class="flex items-center gap-1">
-                    <span id="orderTypeText" class="font-bold text-gray-900 text-sm">Ambil Sekarang</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-4 h-4 text-gray-800">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                    </svg>
-                </div>
+                <span id="orderTypeText" class="font-bold text-gray-900 text-sm">Ambil Sekarang</span>
             </div>
 
-            <!-- Related Menu -->
+            <!-- Best Selling Menu -->
             <div>
                 <h2 class="font-bold text-gray-900 mb-3">Rekomendasi Menu</h2>
                 <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
-                    <!-- Item 1 -->
-                    <div
-                        class="min-w-[160px] bg-white border border-gray-100 rounded-xl p-2 shadow-sm flex gap-2 items-center">
-                        <img src="https://esb-order.oss-ap-southeast-5.aliyuncs.com/images/mbss/menu/MNU_3485_20250519193451_thumb.webp"
-                            class="w-14 h-14 rounded-lg object-cover bg-gray-200" alt="Menu">
-                        <div class="flex-1">
-                            <h3 class="text-xs font-bold text-gray-800 leading-tight mb-1">MIE GACOAN LV 3</h3>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-gray-600">Rp10.909</span>
-                                <button class="text-orange-500" onclick="window.history.back()">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </button>
+                    @forelse ($bestSellingProducts as $product)
+                        <div class="min-w-[160px] bg-white border border-gray-100 rounded-xl p-2 shadow-sm flex gap-2 items-center"
+                            data-best-selling-id="{{ $product->id }}" data-best-selling-name="{{ $product->name }}"
+                            data-best-selling-price="{{ $product->price }}">
+                            <img src="/public/images/{{ $product->image }}"
+                                class="w-14 h-14 rounded-lg object-cover bg-gray-200" alt="{{ $product->name }}">
+                            <div class="flex-1">
+                                <h3 class="text-xs font-bold text-gray-800 leading-tight mb-1">
+                                    {{ strtoupper($product->name) }}</h3>
+                                <div class="flex items-center justify-between">
+                                    <span
+                                        class="text-xs font-bold text-gray-600">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                                    <button
+                                        class="text-orange-500 add-best-selling-btn hover:text-orange-600 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Item 2 -->
-
+                    @empty
+                        <div class="w-full text-center py-4 text-gray-500 text-sm italic">
+                            Belum ada menu terlaris. Mulai pesan sekarang!
+                        </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -383,6 +384,50 @@
             if (closeBtn) closeBtn.addEventListener('click', closeModal);
             if (overlay) overlay.addEventListener('click', closeModal);
             if (saveBtn) saveBtn.addEventListener('click', closeModal);
+
+            // --- Best Selling Products Add to Cart ---
+            const bestSellingBtns = document.querySelectorAll('.add-best-selling-btn');
+
+            bestSellingBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productCard = this.closest('[data-best-selling-id]');
+                    const itemId = productCard.getAttribute('data-best-selling-id');
+                    const itemName = productCard.getAttribute('data-best-selling-name');
+                    const itemPrice = parseInt(productCard.getAttribute('data-best-selling-price'));
+
+                    // Add to cart
+                    if (!cart[itemId]) {
+                        cart[itemId] = {
+                            name: itemName,
+                            price: itemPrice,
+                            quantity: 1
+                        };
+                    } else {
+                        cart[itemId].quantity++;
+                    }
+
+                    // Save to localStorage
+                    localStorage.setItem('wbs_cart', JSON.stringify(cart));
+
+                    // Re-render cart
+                    renderCartItems();
+
+                    // Visual feedback
+                    const originalIcon = this.innerHTML;
+                    this.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                        </svg>
+                    `;
+                    this.classList.add('text-green-500');
+
+                    setTimeout(() => {
+                        this.innerHTML = originalIcon;
+                        this.classList.remove('text-green-500');
+                        this.classList.add('text-orange-500');
+                    }, 1000);
+                });
+            });
 
             // --- Payment Navigation ---
             window.goToPayment = function() {

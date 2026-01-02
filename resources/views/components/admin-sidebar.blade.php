@@ -8,7 +8,7 @@
 <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col z-20">
     <!-- Logo -->
     <div class="h-16 flex items-center px-6 border-b border-gray-100">
-        <div class="flex items-center gap-2 font-bold text-xl text-primary">
+        <div class="flex items-center gap-2 font-bold text-xl text-orange-600">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                 class="w-8 h-8">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -25,7 +25,7 @@
         @if ($role === 'admin')
             <!-- Dashboard -->
             <a href="/dashboard"
-                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'dashboard' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'dashboard' ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -36,7 +36,7 @@
 
             <!-- Cashier -->
             <a href="/dashboard/cashier"
-                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'cashier' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'cashier' ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -47,7 +47,7 @@
 
             <!-- Orders -->
             <a href="/dashboard/orders"
-                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'orders' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'orders' ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -58,7 +58,7 @@
 
             <!-- Menu Management -->
             <a href="/dashboard/menu"
-                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'menu' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'menu' ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -69,7 +69,7 @@
 
             <!-- Accounts Management -->
             <a href="/dashboard/accounts"
-                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'accounts' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'accounts' ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -80,7 +80,7 @@
 
             <!-- Transactions -->
             <a href="/dashboard/transactions"
-                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'transactions' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'transactions' ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -91,7 +91,7 @@
         @else
             <!-- Cashier -->
             <a href="/dashboard/cashier"
-                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'cashier' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'cashier' ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -102,7 +102,7 @@
 
             <!-- Orders -->
             <a href="/dashboard/orders"
-                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'orders' ? 'bg-orange-50 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
+                class="flex items-center gap-3 px-3 py-2.5 {{ $active === 'orders' ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} rounded-xl transition-colors font-medium">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -132,7 +132,8 @@
     <!-- User Info -->
     <div class="p-4 border-t border-gray-100">
         <div class="flex items-center gap-3 px-3 py-2">
-            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-primary font-bold">
+            <div
+                class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold">
                 {{ strtoupper(substr(session('admin_name', 'A'), 0, 1)) }}
             </div>
             <div class="flex-1 min-w-0">

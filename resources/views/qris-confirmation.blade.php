@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Start Order - Warung Bali Sangeh</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     @endif
     <style>
         body {
@@ -65,7 +65,8 @@
                     </div>
 
                     <!-- QR Image Placeholder -->
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
+                    <img id="qrisImage"
+                        src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
                         alt="QR Code" class="w-full h-full object-contain z-10 relative bg-white">
                 </div>
 
@@ -81,7 +82,7 @@
                     class="flex-1 bg-[#f05a28] hover:bg-[#d94a1c] text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                     Cek Status Pembayaran
                 </button>
-                <button
+                <button id="downloadQrisBtn"
                     class="px-4 py-3 border border-orange-200 rounded-xl text-[#f05a28] hover:bg-orange-50 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-6 h-6">
@@ -358,6 +359,54 @@
                         });
                     });
                 });
+            });
+
+            // Download QRIS Image Function
+            document.getElementById('downloadQrisBtn').addEventListener('click', function() {
+                const qrisImage = document.getElementById('qrisImage');
+                const orderNumber = localStorage.getItem('wbs_order_number') || 'QRIS';
+
+                // Create a canvas to convert the image
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                // Create a new image to handle cross-origin
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+
+                img.onload = function() {
+                    // Set canvas size to match image
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    // Draw image on canvas
+                    ctx.drawImage(img, 0, 0);
+
+                    // Convert to blob and download
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `QRIS-${orderNumber}.png`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                    });
+                };
+
+                // If cross-origin fails, try direct download
+                img.onerror = function() {
+                    const link = document.createElement('a');
+                    link.href = qrisImage.src;
+                    link.download = `QRIS-${orderNumber}.png`;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                };
+
+                img.src = qrisImage.src;
             });
         </script>
     </div>

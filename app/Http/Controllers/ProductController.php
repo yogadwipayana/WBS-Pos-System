@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -15,6 +16,22 @@ class ProductController extends Controller
     {
         $categories = Category::with('products')->get();
         return view('order', compact('categories'));
+    }
+
+    /**
+     * Display the view order page with best-selling products.
+     */
+    public function viewOrderPage()
+    {
+        // Get top 2 best-selling products based on order_items
+        $bestSellingProducts = Product::select('products.*', \DB::raw('SUM(order_items.quantity) as total_sold'))
+            ->join('order_items', 'products.id', '=', 'order_items.product_id')
+            ->groupBy('products.id', 'products.name', 'products.category_id', 'products.price', 'products.stock', 'products.image', 'products.description', 'products.created_at', 'products.updated_at')
+            ->orderByDesc('total_sold')
+            ->limit(2)
+            ->get();
+
+        return view('view-order', compact('bestSellingProducts'));
     }
 
     /**
@@ -54,7 +71,14 @@ class ProductController extends Controller
                 $slug = strtolower(str_replace(' ', '-', $validated['name']));
                 $extension = $file->getClientOriginalExtension();
                 $filename = $slug . '.' . $extension;
-                $file->move(public_path('images'), $filename);
+
+                // Ensure images directory exists with proper permissions
+                $imagesPath = public_path('images');
+                if (!file_exists($imagesPath)) {
+                    mkdir($imagesPath, 0755, true);
+                }
+
+                $file->move($imagesPath, $filename);
                 $validated['image'] = $filename;
             }
 
@@ -116,7 +140,14 @@ class ProductController extends Controller
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
                 $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images'), $filename);
+
+                // Ensure images directory exists with proper permissions
+                $imagesPath = public_path('images');
+                if (!file_exists($imagesPath)) {
+                    mkdir($imagesPath, 0755, true);
+                }
+
+                $file->move($imagesPath, $filename);
                 $validated['image'] = $filename;
 
                 // Optional: Delete old image if exists

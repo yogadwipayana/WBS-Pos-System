@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mulai Pesan - Warung Bali Sangeh</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     @endif
     <style>
         body {
@@ -24,7 +24,7 @@
     <div class="w-full max-w-[500px] bg-gray-50 min-h-screen relative shadow-2xl overflow-hidden">
 
         <!-- Background Top Blur/Image -->
-        <div class="h-48 bg-gray-200 w-full absolute top-0 z-0 overflow-hidden">
+        <div class="h-48 bg-gray-200 w-full absolute top-0 z-0 overflow-hidden">`
             <!-- Placeholder for a blurry shop background looking similar to the design -->
             <img src="{{ asset('images/sawah.jpg') }}" alt="Background"
                 class="w-full h-full object-cover blur-sm opacity-50">

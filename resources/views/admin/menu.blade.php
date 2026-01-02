@@ -394,7 +394,7 @@
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Product Name *</label>
                         <input type="text" id="productName" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                             placeholder="e.g. Nasi Goreng Spesial">
                     </div>
 
@@ -402,7 +402,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Category *</label>
                         <select id="productCategory" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                             <option value="">Select Category</option>
                             @foreach ($categories ?? [] as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -414,7 +414,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Price (Rp) *</label>
                         <input type="number" id="productPrice" required min="0" step="1000"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                             placeholder="25000">
                     </div>
 
@@ -422,7 +422,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Initial Stock *</label>
                         <input type="number" id="productStock" required min="0"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                             placeholder="50">
                     </div>
 
@@ -430,7 +430,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Image</label>
                         <input type="file" id="productImage" accept="image/*"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                         <p class="text-xs text-gray-500 mt-1">Place image in public/images/ folder. Max 2MB.</p>
                     </div>
 
@@ -438,7 +438,7 @@
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
                         <textarea id="productDescription" rows="3"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                             placeholder="Brief description of the product..."></textarea>
                     </div>
                 </div>
@@ -453,7 +453,7 @@
                     Cancel
                 </button>
                 <button onclick="submitAddProduct()" type="button"
-                    class="px-6 py-2.5 bg-primary hover:bg-orange-700 text-white font-semibold rounded-xl transition-colors">
+                    class="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl transition-colors">
                     Add Product
                 </button>
             </div>
@@ -484,7 +484,7 @@
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Product Name *</label>
                         <input type="text" id="editProductName" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                             placeholder="e.g. Nasi Goreng Spesial">
                     </div>
 
@@ -492,7 +492,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Category *</label>
                         <select id="editProductCategory" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                             <option value="">Select Category</option>
                             @foreach ($categories ?? [] as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -504,7 +504,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Price (Rp) *</label>
                         <input type="number" id="editProductPrice" required min="0" step="1000"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                             placeholder="25000">
                     </div>
 
@@ -512,7 +512,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Stock *</label>
                         <input type="number" id="editProductStock" required min="0"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                             placeholder="50">
                     </div>
 
@@ -520,7 +520,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Image</label>
                         <input type="file" id="editProductImage" accept="image/*"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                         <p class="text-xs text-gray-500 mt-1">Leave empty to keep existing. Max 2MB.</p>
                     </div>
 
@@ -528,7 +528,7 @@
                     <div class="md:col-span-2">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
                         <textarea id="editProductDescription" rows="3"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                             placeholder="Brief description of the product..."></textarea>
                     </div>
                 </div>

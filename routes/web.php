@@ -13,9 +13,7 @@ Route::get('/mode', function () {
     return view('mode');
 });
 Route::get('/order', [ProductController::class, 'orderPage']);
-Route::get('/view-order', function () {
-    return view('view-order');
-});
+Route::get('/view-order', [ProductController::class, 'viewOrderPage']);
 Route::get('/payment', function () {
     return view('payment');
 });
@@ -59,6 +57,7 @@ Route::middleware(['admin.auth'])->group(function () {
         Route::get('/dashboard/menu', [AdminController::class, 'menu'])->name('admin.menu');
         Route::get('/dashboard/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
         Route::get('/dashboard/transactions/export', [AdminController::class, 'exportTransactions'])->name('admin.transactions.export');
+        Route::get('/dashboard/transactions/export-pdf', [AdminController::class, 'exportTransactionsPdf'])->name('admin.transactions.export-pdf');
     });
 
     // Shared Routes (Admin & Cashier)

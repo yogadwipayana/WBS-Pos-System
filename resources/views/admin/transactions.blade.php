@@ -10,6 +10,15 @@
             <p class="text-sm text-gray-500">Kelola dan pantau semua transaksi pembayaran</p>
         </div>
         <div class="flex items-center gap-4">
+            <button onclick="exportTransactionsPdf()"
+                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
+                Export PDF
+            </button>
             <button onclick="exportTransactions()"
                 class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -81,7 +90,7 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-gray-500 text-sm font-medium">Hari Ini</span>
-                        <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-primary">
+                        <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -103,14 +112,14 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Cari Transaksi</label>
                             <input type="text" name="search" value="{{ request('search') }}"
                                 placeholder="Nomor transaksi atau order..."
-                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                         </div>
 
                         <!-- Payment Method -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Metode Pembayaran</label>
                             <select name="payment_method"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                                 <option value="">Semua</option>
                                 <option value="cash" {{ request('payment_method') == 'cash' ? 'selected' : '' }}>Cash
                                 </option>
@@ -125,13 +134,14 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
                             <select name="payment_status"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                                 <option value="">Semua</option>
                                 <option value="paid" {{ request('payment_status') == 'paid' ? 'selected' : '' }}>Paid
                                 </option>
                                 <option value="pending" {{ request('payment_status') == 'pending' ? 'selected' : '' }}>
                                     Pending</option>
-                                <option value="failed" {{ request('payment_status') == 'failed' ? 'selected' : '' }}>Failed
+                                <option value="failed" {{ request('payment_status') == 'failed' ? 'selected' : '' }}>
+                                    Failed
                                 </option>
                             </select>
                         </div>
@@ -140,21 +150,21 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Dari Tanggal</label>
                             <input type="date" name="date_from" value="{{ request('date_from') }}"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                         </div>
 
                         <!-- Date To -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Sampai Tanggal</label>
                             <input type="date" name="date_to" value="{{ request('date_to') }}"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                         </div>
 
                         <!-- Amount Min -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Min</label>
                             <input type="number" name="amount_min" value="{{ request('amount_min') }}" placeholder="0"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                         </div>
 
                         <!-- Amount Max -->
@@ -162,7 +172,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Max</label>
                             <input type="number" name="amount_max" value="{{ request('amount_max') }}"
                                 placeholder="999999999"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
                         </div>
                     </div>
 
@@ -172,7 +182,7 @@
                             Reset
                         </a>
                         <button type="submit"
-                            class="px-6 py-2.5 bg-primary hover:bg-orange-700 text-white font-semibold rounded-xl transition-colors">
+                            class="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl transition-colors">
                             Terapkan Filter
                         </button>
                     </div>
@@ -207,7 +217,7 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <a href="/dashboard/orders?view={{ $transaction->order->order_number ?? '' }}"
-                                            class="text-primary hover:underline font-medium">
+                                            class="text-orange-600 hover:underline font-medium">
                                             #{{ $transaction->order->order_number ?? 'N/A' }}
                                         </a>
                                     </td>
@@ -294,7 +304,7 @@
                                 {{-- Page Numbers --}}
                                 @foreach ($transactions->getUrlRange(1, $transactions->lastPage()) as $page => $url)
                                     @if ($page == $transactions->currentPage())
-                                        <span class="px-4 py-2 bg-primary text-white rounded-lg font-semibold">
+                                        <span class="px-4 py-2 bg-orange-600 text-white rounded-lg font-semibold">
                                             {{ $page }}
                                         </span>
                                     @else
@@ -336,6 +346,12 @@
             const exportUrl = "{{ route('admin.transactions.export') }}?" + urlParams.toString();
 
             // Redirect to trigger download
+            window.location.href = exportUrl;
+        }
+
+        function exportTransactionsPdf() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const exportUrl = "{{ route('admin.transactions.export-pdf') }}?" + urlParams.toString();
             window.location.href = exportUrl;
         }
     </script>

@@ -102,7 +102,7 @@
                     <div class="flex items-center justify-between">
                         <h1 class="text-2xl font-bold text-gray-900">Dasbor</h1>
                         <button
-                            class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-xl font-semibold shadow-sm text-sm flex items-center gap-2">
+                            class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-xl font-semibold shadow-sm text-sm flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="w-4 h-4">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

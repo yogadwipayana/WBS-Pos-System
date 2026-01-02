@@ -6,25 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Dashboard') - Warung Bali Sangeh Admin</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            DEFAULT: '#ea580c', // orange-600
-                            dark: '#c2410c', // orange-700
-                            light: '#fb923c', // orange-400
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -36,6 +21,14 @@
     @stack('styles')
 
     <style>
+        @layer theme {
+            :root {
+                --color-primary: #ea580c;
+                --color-primary-dark: #c2410c;
+                --color-primary-light: #fb923c;
+            }
+        }
+
         body {
             font-family: 'Outfit', sans-serif;
         }
@@ -68,7 +61,7 @@
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <x-admin-sidebar :active="$active ?? 'dashboard'" />
+        <x-admin-sidebar :active="$active ?? trim($__env->yieldContent('active')) ?: 'dashboard'" />
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">

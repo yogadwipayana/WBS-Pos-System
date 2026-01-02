@@ -379,6 +379,17 @@ class AdminController extends Controller
         return Excel::download(new TransactionExport($request), 'transactions-' . now()->format('Y-m-d_H-i') . '.xlsx');
     }
 
+    public function exportTransactionsPdf(Request $request)
+    {
+        $export = new TransactionExport($request);
+        $transactions = $export->query()->get();
+
+        return Pdf::view('pdf.transactions', ['transactions' => $transactions])
+            ->format('a4')
+            ->landscape()
+            ->name('transactions-' . now()->format('Y-m-d_H-i') . '.pdf');
+    }
+
     /**
      * Generate kitchen receipt PDF for an order
      */

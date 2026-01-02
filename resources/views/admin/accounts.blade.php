@@ -12,7 +12,7 @@
                     <p class="text-gray-500 mt-1">Manage admin, cashier, and kitchen staff accounts</p>
                 </div>
                 <button onclick="openAddModal()"
-                    class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-xl font-semibold shadow-sm text-sm flex items-center gap-2 transition-colors">
+                    class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-xl font-semibold shadow-sm text-sm flex items-center gap-2 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -141,19 +141,19 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
                         <input type="text" id="name" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <input type="email" id="email" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
                         <select id="role" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600">
                             <option value="cashier">Cashier</option>
                             <option value="kitchen">Kitchen</option>
                             <option value="admin">Admin</option>
@@ -163,7 +163,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                         <input type="password" id="password"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-600">
                         <p id="passwordHint" class="text-xs text-gray-500 mt-1 hidden">Leave empty to keep current password
                         </p>
                     </div>
@@ -175,7 +175,7 @@
                         Cancel
                     </button>
                     <button type="submit"
-                        class="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition-colors">
+                        class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-colors">
                         Save
                     </button>
                 </div>
