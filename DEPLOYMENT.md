@@ -134,8 +134,9 @@ DOMAIN=yourdomain.com                 # Your domain name (optional, use if you h
 > -   **Internal nginx** runs inside the app container (via supervisord) for serving PHP-FPM
 > -   **External nginx** (latest version) runs in a separate container as reverse proxy
 > -   Both work together to provide a production-ready setup
-> 
+>
 > **Domain Configuration:**
+>
 > -   If you set `DOMAIN` in .env, nginx will be configured to accept that domain
 > -   The deploy script will automatically update nginx configuration with your domain
 > -   You can access via domain name or server IP address
@@ -198,11 +199,31 @@ Script akan otomatis:
 -   ✅ Validasi konfigurasi (.env, database credentials, APP_KEY)
 -   ✅ Update nginx configuration dengan domain Anda (jika DOMAIN di-set)
 -   ✅ Build Docker images (with latest Nginx)
+-   ✅ **Set permissions inside container** (bukan di host)
 -   ✅ Install composer dependencies
 -   ✅ Build frontend assets
+-   ✅ **Test database connection dengan retry logic** (5x retry)
 -   ✅ Run migrations
+-   ✅ **Clear cache sebelum caching** (prevent stale cache)
 -   ✅ Cache configurations untuk production
--   ✅ Start semua services
+-   ✅ Start semua services dengan **increased wait times**
+
+> [!IMPORTANT] > **Deployment Script Improvements (v2.0)**
+>
+> Script `deploy.sh` telah diperbaiki dengan 4 improvements penting:
+>
+> 1. **Permission Handling**: Permissions sekarang di-set **inside container** menggunakan `docker compose exec`, bukan di host. Ini memastikan ownership `www-data:www-data` benar.
+>
+> 2. **Database Connection Retry**: Script akan retry koneksi database hingga **5 kali** dengan delay 5 detik. Jika gagal semua, deployment akan **STOP** (tidak lanjut seperti sebelumnya).
+>
+> 3. **Increased Wait Times**:
+>
+>     - Wait setelah start app: `5s → 10s`
+>     - Wait setelah start all services: `10s → 15s`
+>
+> 4. **Cache Management**: Script akan **clear cache** (`optimize:clear`) sebelum caching ulang untuk prevent stale cache issues.
+>
+> **Breaking Change**: Deployment sekarang akan **STOP** jika database tidak bisa diakses (sebelumnya hanya warning).
 
 ### 2. Verifikasi Deployment
 
@@ -235,8 +256,9 @@ docker compose exec app php artisan tinker
 ### 3. Akses Aplikasi
 
 Buka browser dan akses:
-- Via IP: `http://your-vps-ip`
-- Via Domain: `http://yourdomain.com` (jika DOMAIN sudah dikonfigurasi di .env)
+
+-   Via IP: `http://your-vps-ip`
+-   Via Domain: `http://yourdomain.com` (jika DOMAIN sudah dikonfigurasi di .env)
 
 ## 📊 Database Management
 
@@ -505,10 +527,10 @@ crontab -e
 # Check logs
 docker compose logs app
 
-# Check permissions
-docker compose exec app ls -la storage/
-docker compose exec app chown -R www-data:www-data storage bootstrap/cache
-docker compose exec app chmod -R 775 storage bootstrap/cache
+# Check permissions (now set inside container)
+docker compose exec app ls -la /var/www/html/storage/
+docker compose exec app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+docker compose exec app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Check disk space
 df -h
@@ -519,24 +541,30 @@ free -h
 
 ### Database connection error
 
-```bash
-# Check if MySQL is running
-docker compose ps mysql
+> [!NOTE] > **New Behavior**: Deployment script sekarang akan **STOP** jika database tidak bisa diakses setelah 5 retry attempts (sebelumnya hanya warning).
 
-# Check MySQL logs
-docker compose logs mysql
+```bash
+# Check database connection manually
+docker compose exec app php artisan db:show
+
+# Test with tinker
+docker compose exec app php artisan tinker
+# Then run: DB::connection()->getPdo();
 
 # Verify credentials in .env
 cat .env | grep DB_
 
-# Test connection
-docker compose exec app php artisan tinker
-# Then run: DB::connection()->getPdo();
+# Common issues:
+# 1. DB_HOST salah (gunakan IP atau hostname yang benar)
+# 2. MySQL firewall blocking connection
+# 3. MySQL user tidak punya remote access permission
+# 4. Database belum dibuat
 
-# Restart MySQL
-docker compose restart mysql
-sleep 10
-docker compose exec app php artisan migrate
+# Create database if needed (on MySQL server)
+# mysql -h $DB_HOST -u root -p
+# CREATE DATABASE wbs;
+# GRANT ALL PRIVILEGES ON wbs.* TO 'laravel'@'%' IDENTIFIED BY 'password';
+# FLUSH PRIVILEGES;
 ```
 
 ### Domain not accessible
@@ -563,14 +591,19 @@ cat .env | grep DOMAIN
 ### Permission denied errors
 
 ```bash
-# Fix storage permissions
+# Fix storage permissions (inside container)
 docker compose exec app chown -R www-data:www-data /var/www/html/storage
 docker compose exec app chmod -R 775 /var/www/html/storage
 
 # Fix bootstrap cache
 docker compose exec app chown -R www-data:www-data /var/www/html/bootstrap/cache
 docker compose exec app chmod -R 775 /var/www/html/bootstrap/cache
+
+# Clear cache after fixing permissions
+docker compose exec app php artisan optimize:clear
 ```
+
+> [!TIP] > **Permission Best Practice**: Selalu set permissions **inside container** menggunakan `docker compose exec`, bukan di host. Deployment script v2.0 sudah handle ini otomatis.
 
 ### 502 Bad Gateway
 
@@ -802,6 +835,7 @@ Aplikasi Laravel Anda sekarang sudah running di production dengan:
 -   ✅ HTTP access on port 80
 
 **Access your application at:**
+
 -   Via IP: `http://your-vps-ip`
 -   Via Domain: `http://yourdomain.com` (if configured)
 

@@ -7,14 +7,6 @@ set -e
 
 echo "🚀 Starting Laravel deployment..."
 
-mkdir -p storage/framework/cache
-mkdir -p storage/framework/sessions
-mkdir -p storage/framework/views
-mkdir -p storage/logs
-mkdir -p bootstrap/cache
-
-chmod -R 775 storage bootstrap/cache
-
 # Check if .env file exists
 if [ ! -f .env ]; then
     echo "❌ Error: .env file not found!"
@@ -62,19 +54,17 @@ if [ ! -z "$DOMAIN" ]; then
     # Always generate from template to avoid multiple replacements
     sed "s/yourdomain.com/$DOMAIN/g" docker/nginx-proxy.conf.template > docker/nginx-proxy.conf
     echo "✅ Nginx configured for $DOMAIN"
+else
+    echo "⚠️  Warning: DOMAIN not set in .env, using default nginx configuration"
 fi
 
-# Create necessary directories
+# Create necessary directories on host
 echo "📁 Creating directories..."
 mkdir -p storage/framework/cache
 mkdir -p storage/framework/sessions
 mkdir -p storage/framework/views
 mkdir -p storage/logs
 mkdir -p bootstrap/cache
-
-# Set permissions
-echo "🔐 Setting permissions..."
-chmod -R 775 storage bootstrap/cache
 
 # Build and start services
 echo "🐳 Building Docker images..."
@@ -84,7 +74,12 @@ echo "🚀 Starting application service..."
 docker compose up -d app
 
 echo "⏳ Waiting for application to start..."
-sleep 5
+sleep 10
+
+# FIX #1: Set permissions inside container (not on host)
+echo "🔐 Setting permissions inside container..."
+docker compose exec -T app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+docker compose exec -T app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Install dependencies (needed because volume mount overwrites container)
 echo "📦 Installing Composer dependencies..."
@@ -96,23 +91,45 @@ docker compose exec -T app npm run build
 docker compose exec -T app rm -rf node_modules
 
 echo "🔗 Creating storage symlink..."
-docker compose exec -T app php artisan storage:link
+docker compose exec -T app php artisan storage:link || true
 
-# Test database connection
+# FIX #2: Database connection with retry logic and exit on failure
 echo "🔌 Testing database connection..."
-if docker compose exec -T app php artisan db:show 2>/dev/null; then
-    echo "✅ Database connection successful"
-else
-    echo "⚠️  Warning: Could not verify database connection"
+MAX_RETRIES=5
+RETRY_COUNT=0
+DB_CONNECTED=false
+
+while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+    if docker compose exec -T app php artisan db:show 2>/dev/null; then
+        echo "✅ Database connection successful"
+        DB_CONNECTED=true
+        break
+    else
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+            echo "⚠️  Database connection failed. Retrying ($RETRY_COUNT/$MAX_RETRIES)..."
+            sleep 5
+        fi
+    fi
+done
+
+if [ "$DB_CONNECTED" = false ]; then
+    echo "❌ Error: Could not connect to database after $MAX_RETRIES attempts"
     echo "    Please ensure your external MySQL is accessible from the container"
+    echo "    Check DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD in .env"
+    exit 1
 fi
 
 # Run migrations
 echo "📊 Running database migrations..."
 docker compose exec -T app php artisan migrate --force
 
-# Clear caches
-echo "🧹 Clearing Laravel caches..."
+# FIX #4: Clear cache before caching (prevent stale cache issues)
+echo "🧹 Clearing old caches..."
+docker compose exec -T app php artisan optimize:clear
+
+# Cache for production
+echo "⚡ Caching configurations for production..."
 docker compose exec -T app php artisan config:cache
 docker compose exec -T app php artisan route:cache
 docker compose exec -T app php artisan view:cache
@@ -121,9 +138,9 @@ docker compose exec -T app php artisan view:cache
 echo "🚀 Starting all services..."
 docker compose up -d
 
-# Wait for services to be ready
+# FIX #3: Increased wait time for services to be ready
 echo "⏳ Waiting for services to start..."
-sleep 10
+sleep 15
 
 echo "♻️  Reloading nginx..."
 docker compose exec nginx nginx -s reload
@@ -136,13 +153,19 @@ echo "📊 Service Status:"
 docker compose ps
 echo ""
 echo "🌐 Your site should be available at:"
-echo "   http://localhost"
+if [ ! -z "$DOMAIN" ]; then
+    echo "   http://$DOMAIN"
+else
+    echo "   http://localhost"
+fi
 echo ""
 echo "📝 Useful commands:"
 echo "   View logs:          docker compose logs -f"
 echo "   View app logs:      docker compose logs -f app"
 echo "   Laravel commands:   docker compose exec app php artisan [command]"
 echo "   Database migration: docker compose exec app php artisan migrate"
-echo "   Clear cache:        docker compose exec app php artisan cache:clear"
+echo "   Clear cache:        docker compose exec app php artisan optimize:clear"
 echo "   Stop services:      docker compose down"
 echo "   Restart:            docker compose restart"
+echo ""
+echo "⚠️  Note: If you change .env, run: docker compose exec app php artisan optimize:clear"
