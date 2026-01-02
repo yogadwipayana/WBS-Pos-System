@@ -28,6 +28,13 @@ class AdminSeeder extends Seeder
                 'role' => 'cashier',
                 'is_active' => true,
             ],
+            [
+                'name' => 'Kitchen WBS',
+                'email' => 'kitchen@wbs.com',
+                'password' => bcrypt('password'),
+                'role' => 'kitchen',
+                'is_active' => true,
+            ],
         ];
 
         foreach ($admins as $admin) {

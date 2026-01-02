@@ -11,9 +11,7 @@ class Order extends Model
 {
     protected $fillable = [
         'order_number',
-        'user_id',
         'customer_name',
-        'customer_phone',
         'order_type',
         'table_number',
         'discount',
@@ -28,15 +26,7 @@ class Order extends Model
     ];
 
     /**
-     * Get the user that owns the order
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Get all items for this order
+     * Get order items for this order
      */
     public function orderItems(): HasMany
     {
