@@ -191,7 +191,6 @@ class OrderController extends Controller
         // Validate incoming request
         $validated = $request->validate([
             'customer_name' => 'sometimes|string|max:255',
-            'customer_phone' => 'nullable|string|max:20',
             'order_type' => 'sometimes|in:dinein,takeaway',
             'status' => 'sometimes|in:pending,preparing,ready,completed,cancelled',
             'notes' => 'nullable|string',

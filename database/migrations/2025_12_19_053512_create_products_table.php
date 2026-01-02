@@ -17,8 +17,10 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('price', 10, 2)->default(0.00);
             $table->integer('stock')->default(0);
+            $table->string('image')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
-            
+
             $table->index('category_id', 'idx_category');
             $table->index('price', 'idx_price');
         });

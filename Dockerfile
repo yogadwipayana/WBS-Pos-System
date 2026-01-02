@@ -55,7 +55,7 @@ RUN npm ci && npm run build && rm -rf node_modules
 RUN php artisan storage:link || true
 
 # Expose ports
-EXPOSE 80 9000
+EXPOSE 80 443
 
 # Start supervisor (manages PHP-FPM and nginx)
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
