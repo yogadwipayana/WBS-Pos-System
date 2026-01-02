@@ -7,6 +7,16 @@ set -e
 
 echo "🚀 Starting Laravel deployment..."
 
+# Create necessary directories
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/logs
+mkdir -p bootstrap/cache
+
+# Set permissions
+chmod -R 775 storage bootstrap/cache
+
 # Check if .env file exists
 if [ ! -f .env ]; then
     echo "❌ Error: .env file not found!"
@@ -92,37 +102,6 @@ docker compose exec -T app rm -rf node_modules
 
 echo "🔗 Creating storage symlink..."
 docker compose exec -T app php artisan storage:link || true
-
-# FIX #2: Database connection with retry logic and exit on failure
-echo "🔌 Testing database connection..."
-MAX_RETRIES=5
-RETRY_COUNT=0
-DB_CONNECTED=false
-
-while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-    if docker compose exec -T app php artisan db:show 2>/dev/null; then
-        echo "✅ Database connection successful"
-        DB_CONNECTED=true
-        break
-    else
-        RETRY_COUNT=$((RETRY_COUNT + 1))
-        if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-            echo "⚠️  Database connection failed. Retrying ($RETRY_COUNT/$MAX_RETRIES)..."
-            sleep 5
-        fi
-    fi
-done
-
-if [ "$DB_CONNECTED" = false ]; then
-    echo "❌ Error: Could not connect to database after $MAX_RETRIES attempts"
-    echo "    Please ensure your external MySQL is accessible from the container"
-    echo "    Check DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD in .env"
-    exit 1
-fi
-
-# Run migrations
-echo "📊 Running database migrations..."
-docker compose exec -T app php artisan migrate --force
 
 # FIX #4: Clear cache before caching (prevent stale cache issues)
 echo "🧹 Clearing old caches..."
