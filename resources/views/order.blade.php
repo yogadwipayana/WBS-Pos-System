@@ -69,28 +69,50 @@
                 </svg>
             </div>
 
-            <!-- Dine In Banner (Hidden by default) -->
-            <div id="dineInBanner"
-                class="bg-orange-50 border border-orange-100 rounded-xl p-4 shadow-sm text-center hidden">
-                <span id="tableDisplay" class="text-gray-900 font-bold text-lg">Nomor Meja: 1</span>
-            </div>
-
-            <!-- Order Type Selector (Default / Takeaway) -->
-            <div id="takewaySelector" class="border rounded-xl p-4 shadow-sm bg-white">
-                <div class="flex items-center justify-between mb-4">
+            <!-- Order Type Section -->
+            <div class="bg-white border rounded-xl p-4 shadow-sm space-y-4">
+                <div class="flex items-center justify-between relative">
                     <span class="text-gray-700 font-medium">Tipe Order</span>
-                    <button
-                        class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                        Takeaway
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </button>
+                    <div class="relative" id="orderTypeDropdown">
+                        <button type="button" id="orderTypeBtn"
+                            class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                            <span id="orderTypeLabel">Takeaway</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="w-4 h-4 transition-transform duration-200" id="dropdownArrow">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div id="dropdownMenu"
+                            class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-[100] hidden transform origin-top-right transition-all duration-200 scale-95 opacity-0">
+                            <div class="py-1">
+                                <button type="button" onclick="setOrderType('takeaway')"
+                                    class="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center gap-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor" class="w-4 h-4 shadow-sm">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                    </svg>
+                                    Takeaway
+                                </button>
+                                <button type="button" onclick="setOrderType('dinein')"
+                                    class="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center gap-3 border-t border-gray-50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor" class="w-4 h-4 shadow-sm">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18" />
+                                    </svg>
+                                    Dine In
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center gap-3 py-3 border-t border-dashed border-gray-200">
+
+                <!-- Takeaway Status -->
+                <div id="takeawayStatus" class="flex items-center gap-3 py-3 border-t border-dashed border-gray-200">
                     <div class="p-2 bg-gray-100 rounded-full">
-                        <!-- Icon Food Dome -->
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6 text-gray-800">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -98,6 +120,15 @@
                         </svg>
                     </div>
                     <span class="font-bold text-gray-900">Ambil Sekarang</span>
+                </div>
+
+                <!-- Dine In Status -->
+                <div id="dineInStatus" class="hidden border-t border-dashed border-gray-200 pt-3">
+                    <div onclick="openModal()"
+                        class="bg-orange-50 border border-orange-100 rounded-xl p-4 shadow-sm text-center cursor-pointer hover:bg-orange-100 transition-all active:scale-[0.98]">
+                        <span id="tableDisplay" class="text-gray-900 font-bold text-lg">Nomor Meja: -</span>
+                        <p class="text-xs text-orange-600 mt-1 font-medium italic">Klik untuk ubah nomor meja</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -212,7 +243,7 @@
 
     <!-- Dine In Modal Overlay -->
     <div id="modalOverlay"
-        class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden transition-opacity duration-300 opacity-0"></div>
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden transition-opacity duration-300 opacity-0"></div>
 
     <!-- Dine In Modal Content -->
     <div id="dineInModal"
@@ -306,23 +337,93 @@
                 });
             }
 
-            // Mode Switching Logic
-            if (mode === 'dinein') {
-                if (dineInBanner) dineInBanner.classList.remove('hidden');
-                if (takewaySelector) takewaySelector.classList.add('hidden');
+            // --- Dropdown Functionality ---
+            const dropdownBtn = document.getElementById('orderTypeBtn');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const dropdownArrow = document.getElementById('dropdownArrow');
 
-                // If table parameter exists, pre-fill and don't show modal
-                if (table) {
-                    if (input) input.value = table;
-                    if (tableDisplay) tableDisplay.textContent = 'Nomor Meja: ' + table;
+            function toggleDropdown() {
+                const isHidden = dropdownMenu.classList.contains('hidden');
+                if (isHidden) {
+                    dropdownMenu.classList.remove('hidden');
+                    setTimeout(() => {
+                        dropdownMenu.classList.remove('scale-95', 'opacity-0');
+                        dropdownMenu.classList.add('scale-100', 'opacity-100');
+                        dropdownArrow.classList.add('rotate-180');
+                    }, 10);
                 } else {
-                    openModal();
+                    dropdownMenu.classList.remove('scale-100', 'opacity-100');
+                    dropdownMenu.classList.add('scale-95', 'opacity-0');
+                    dropdownArrow.classList.remove('rotate-180');
+                    setTimeout(() => {
+                        dropdownMenu.classList.add('hidden');
+                    }, 200);
                 }
-            } else {
-                // Default / Takeaway
-                if (dineInBanner) dineInBanner.classList.add('hidden');
-                if (takewaySelector) takewaySelector.classList.remove('hidden');
             }
+
+            if (dropdownBtn) {
+                dropdownBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleDropdown();
+                });
+            }
+
+            // Close dropdown when clicking outside
+            window.addEventListener('click', () => {
+                if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
+                    toggleDropdown();
+                }
+            });
+
+            const orderTypeLabel = document.getElementById('orderTypeLabel');
+            const takeawayStatus = document.getElementById('takeawayStatus');
+            const dineInStatus = document.getElementById('dineInStatus');
+
+            window.setOrderType = function(type) {
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('mode', type);
+
+                // If switching to takeaway, remove table param
+                if (type === 'takeaway') {
+                    currentUrl.searchParams.delete('table');
+                    if (input) input.value = '';
+                }
+
+                window.history.pushState({}, '', currentUrl);
+
+                updateUIForMode(type);
+                if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
+                    toggleDropdown();
+                }
+
+                // If switching to dine-in and no table is set, open modal
+                if (type === 'dinein' && (!input || !input.value)) {
+                    setTimeout(openModal, 300);
+                }
+            }
+
+            function updateUIForMode(currentMode) {
+                if (currentMode === 'dinein') {
+                    if (orderTypeLabel) orderTypeLabel.textContent = 'Dine In';
+                    if (takeawayStatus) takeawayStatus.classList.add('hidden');
+                    if (dineInStatus) dineInStatus.classList.remove('hidden');
+
+                    const tableNum = new URLSearchParams(window.location.search).get('table');
+                    if (tableNum && tableDisplay) {
+                        tableDisplay.textContent = 'Nomor Meja: ' + tableNum;
+                        if (input) input.value = tableNum;
+                    } else if (tableDisplay) {
+                        tableDisplay.textContent = 'Nomor Meja: -';
+                    }
+                } else {
+                    if (orderTypeLabel) orderTypeLabel.textContent = 'Takeaway';
+                    if (takeawayStatus) takeawayStatus.classList.remove('hidden');
+                    if (dineInStatus) dineInStatus.classList.add('hidden');
+                }
+            }
+
+            // Initialize UI
+            updateUIForMode(mode || 'takeaway');
 
             if (closeBtn) {
                 closeBtn.addEventListener('click', closeModal);
@@ -343,6 +444,11 @@
                     // Update the banner with the input value
                     if (input && input.value && tableDisplay) {
                         tableDisplay.textContent = 'Nomor Meja: ' + input.value;
+
+                        // Update URL with table number
+                        const currentUrl = new URL(window.location.href);
+                        currentUrl.searchParams.set('table', input.value);
+                        window.history.pushState({}, '', currentUrl);
                     }
                     closeModal();
                 });
