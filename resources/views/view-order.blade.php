@@ -160,9 +160,11 @@
             </div>
         </div>
     </div>
+
     <!-- Notes Modal Overlay -->
     <div id="notesOverlay"
-        class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden transition-opacity duration-300 opacity-0"></div>
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden transition-opacity duration-300 opacity-0">
+    </div>
 
     <!-- Notes Modal Content -->
     <div id="notesModal"

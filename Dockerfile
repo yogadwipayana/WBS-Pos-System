@@ -5,7 +5,7 @@ FROM php:8.4-fpm
 WORKDIR /var/www/html
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     libpng-dev \
@@ -16,8 +16,14 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nginx \
     supervisor \
+    chromium \
+    chromium-sandbox \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+# Set Puppeteer environment variables
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
