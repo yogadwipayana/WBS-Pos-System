@@ -228,7 +228,7 @@
 
         <!-- Validation Modal Overlay -->
         <div id="validationModalOverlay"
-            class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden transition-opacity duration-300 opacity-0"></div>
+            class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden transition-opacity duration-300 opacity-0"></div>
 
         <!-- Validation Modal Content -->
         <div id="validationModal" class="fixed inset-0 z-[70] flex justify-center items-center pointer-events-none">
