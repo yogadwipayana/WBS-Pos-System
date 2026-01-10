@@ -185,11 +185,21 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id);
+
+            // Path file image
+            $imagePath = public_path('images/' . $product->image);
+
+            // Hapus file image jika ada
+            if ($product->image && file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            // Hapus data product
             $product->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Product deleted successfully'
+                'message' => 'Product and image deleted successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([

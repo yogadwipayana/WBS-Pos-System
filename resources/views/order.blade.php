@@ -78,7 +78,8 @@
                             class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                             <span id="orderTypeLabel">Takeaway</span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" class="w-4 h-4 transition-transform duration-200" id="dropdownArrow">
+                                stroke="currentColor" class="w-4 h-4 transition-transform duration-200"
+                                id="dropdownArrow">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                             </svg>
                         </button>
@@ -170,7 +171,8 @@
                                         <img src="/public/images/{{ $product->image }}" alt="{{ $product->name }}"
                                             class="w-full h-full object-cover">
                                     </div>
-                                    <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">{{ $product->name }}
+                                    <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">
+                                        {{ $product->name }}
                                     </h4>
                                     <p class="text-gray-900 font-bold text-sm mb-3">
                                         Rp{{ number_format($product->price, 0, ',', '.') }}</p>
@@ -243,7 +245,8 @@
 
     <!-- Dine In Modal Overlay -->
     <div id="modalOverlay"
-        class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden transition-opacity duration-300 opacity-0"></div>
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden transition-opacity duration-300 opacity-0">
+    </div>
 
     <!-- Dine In Modal Content -->
     <div id="dineInModal"
@@ -392,13 +395,20 @@
                 window.history.pushState({}, '', currentUrl);
 
                 updateUIForMode(type);
+
+                // Close dropdown if open
                 if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
                     toggleDropdown();
                 }
 
                 // If switching to dine-in and no table is set, open modal
-                if (type === 'dinein' && (!input || !input.value)) {
-                    setTimeout(openModal, 300);
+                if (type === 'dinein') {
+                    const currentInput = document.getElementById('tableNumberInput');
+                    if (!currentInput || !currentInput.value) {
+                        setTimeout(() => {
+                            openModal();
+                        }, 100);
+                    }
                 }
             }
 
@@ -424,6 +434,13 @@
 
             // Initialize UI
             updateUIForMode(mode || 'takeaway');
+
+            // Auto open modal if in dinein mode and no table set
+            if ((mode === 'dinein') && (!table)) {
+                setTimeout(() => {
+                    openModal();
+                }, 500);
+            }
 
             if (closeBtn) {
                 closeBtn.addEventListener('click', closeModal);
