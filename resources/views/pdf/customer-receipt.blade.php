@@ -195,11 +195,7 @@
                 <tr>
                     <td class="qty-col">{{ $item->quantity }}</td>
                     <td class="item-col">
-                        <div style="font-weight: bold;">{{ $item->product->name }}</div>
-                        @if ($item->product->description)
-                            <div style="font-size: 10px; color: #666;">{{ Str::limit($item->product->description, 30) }}
-                            </div>
-                        @endif
+                        <div style="font-weight: bold;">{{ $item->product_name }}</div>
                     </td>
                     <td class="price-col">{{ number_format($item->price, 0, ',', '.') }}</td>
                     <td class="total-col">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
