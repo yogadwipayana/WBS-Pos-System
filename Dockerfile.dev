@@ -40,11 +40,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Copy application files
 COPY . /var/www/html
 
-# Copy nginx configuration
-COPY docker/nginx.conf /etc/nginx/sites-available/default
+# Copy nginx configuration for development
+COPY dockerDev/nginx.conf /etc/nginx/sites-available/default
 
-# Copy supervisor configuration
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Copy supervisor configuration for development
+COPY dockerDev/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Copy PHP configuration for development
+COPY dockerDev/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
