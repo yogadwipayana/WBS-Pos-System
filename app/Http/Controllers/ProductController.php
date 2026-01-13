@@ -78,7 +78,8 @@ class ProductController extends Controller
                     mkdir($imagesPath, 0755, true);
                 }
 
-                $file->move($imagesPath, $filename);
+                // Compress and resize image before saving
+                $this->compressAndResizeImage($file, $imagesPath, $filename);
                 $validated['image'] = $filename;
             }
 
@@ -147,7 +148,8 @@ class ProductController extends Controller
                     mkdir($imagesPath, 0755, true);
                 }
 
-                $file->move($imagesPath, $filename);
+                // Compress and resize image before saving
+                $this->compressAndResizeImage($file, $imagesPath, $filename);
                 $validated['image'] = $filename;
 
                 // Optional: Delete old image if exists
@@ -207,5 +209,92 @@ class ProductController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Compress and resize image to reduce file size
+     * 
+     * @param \Illuminate\Http\UploadedFile $file
+     * @param string $destinationPath
+     * @param string $filename
+     * @param int $maxWidth Maximum width in pixels (default: 800)
+     * @param int $quality JPEG quality 0-100 (default: 75)
+     * @return void
+     */
+    private function compressAndResizeImage($file, $destinationPath, $filename, $maxWidth = 800, $quality = 75)
+    {
+        // Get the original image dimensions and type
+        $imageInfo = getimagesize($file->getPathname());
+        $originalWidth = $imageInfo[0];
+        $originalHeight = $imageInfo[1];
+        $mimeType = $imageInfo['mime'];
+
+        // Calculate new dimensions while maintaining aspect ratio
+        if ($originalWidth > $maxWidth) {
+            $newWidth = $maxWidth;
+            $newHeight = intval(($originalHeight / $originalWidth) * $maxWidth);
+        } else {
+            $newWidth = $originalWidth;
+            $newHeight = $originalHeight;
+        }
+
+        // Create image resource based on file type
+        switch ($mimeType) {
+            case 'image/jpeg':
+            case 'image/jpg':
+                $sourceImage = imagecreatefromjpeg($file->getPathname());
+                break;
+            case 'image/png':
+                $sourceImage = imagecreatefrompng($file->getPathname());
+                break;
+            case 'image/gif':
+                $sourceImage = imagecreatefromgif($file->getPathname());
+                break;
+            case 'image/webp':
+                $sourceImage = imagecreatefromwebp($file->getPathname());
+                break;
+            default:
+                // If unsupported format, just move the file without compression
+                $file->move($destinationPath, $filename);
+                return;
+        }
+
+        // Create a new true color image
+        $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+
+        // Preserve transparency for PNG and GIF
+        if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
+            imagealphablending($resizedImage, false);
+            imagesavealpha($resizedImage, true);
+            $transparent = imagecolorallocatealpha($resizedImage, 255, 255, 255, 127);
+            imagefilledrectangle($resizedImage, 0, 0, $newWidth, $newHeight, $transparent);
+        }
+
+        // Resize the image
+        imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight);
+
+        // Save the compressed image
+        $fullPath = $destinationPath . '/' . $filename;
+        switch ($mimeType) {
+            case 'image/jpeg':
+            case 'image/jpg':
+                imagejpeg($resizedImage, $fullPath, $quality);
+                break;
+            case 'image/png':
+                // PNG quality is 0-9, convert from 0-100 scale
+                $pngQuality = intval((100 - $quality) / 11);
+                imagepng($resizedImage, $fullPath, $pngQuality);
+                break;
+            case 'image/gif':
+                imagegif($resizedImage, $fullPath);
+                break;
+            case 'image/webp':
+                imagewebp($resizedImage, $fullPath, $quality);
+                break;
+        }
+
+        // Free up memory
+        imagedestroy($sourceImage);
+        imagedestroy($resizedImage);
     }
 }
