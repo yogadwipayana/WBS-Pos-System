@@ -75,7 +75,8 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN composer install --optimize-autoloader --no-dev
 
 # Install Node dependencies and build assets
-RUN npm ci && npm run build && rm -rf node_modules
+# Keep production dependencies (puppeteer) but remove devDependencies
+RUN npm ci && npm run build && npm prune --production
 
 # Create Laravel storage symlink
 RUN php artisan storage:link || true
