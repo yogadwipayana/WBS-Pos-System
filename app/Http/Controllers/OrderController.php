@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Models\Table;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreOrderRequest;
 use Illuminate\Support\Facades\DB;
 use Spatie\LaravelPdf\Facades\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class OrderController extends Controller
 {
@@ -235,4 +237,162 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    // ------------------ ADMIN ------------------
+
+    // List semua meja (Admin Dashboard)
+    public function indexTables()
+    {
+        $tables = \App\Models\Table::orderBy('number')->get();
+        return view('admin.tables.index', compact('tables'))->with('active','tables');
+    }
+
+    // Lihat QR code untuk meja tertentu (untuk button "Lihat QR")
+    public function showQR($id)
+    {
+        $table = \App\Models\Table::findOrFail($id);
+
+        // URL yang nanti discan pelanggan
+        $url = url("/order-menu?table=" . $table->number);
+
+        // Generate QR code (SVG untuk tampilan yang lebih baik)
+        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(300)
+            ->format('svg')
+            ->generate($url);
+
+        return view('admin.tables.qr', compact('qrCode', 'table', 'url'))->
+            with('active', 'tables');
+    }
+
+    // Generate / Cetak QR untuk meja tertentu
+    public function printQR($id)
+    {
+        $table = \App\Models\Table::findOrFail($id);
+
+        // URL yang nanti discan pelanggan
+        $url = url("/order-menu?table=" . $table->number);
+
+        // Generate QR code
+        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(300)
+            ->format('png') // bisa juga 'svg' kalau mau vektor
+            ->generate($url);
+
+        return view('admin.tables.print', compact('qrCode', 'table'));
+    }
+
+    // ------------------ PELANGGAN ------------------
+
+    // Saat pelanggan scan QR dan buka menu
+    public function showMenu(Request $request)
+    {
+        $tableNumber = $request->query('table');
+
+        $checkTable = \App\Models\Table::where('number', $tableNumber)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$checkTable) {
+            return redirect('/')->with('error', 'Meja tidak valid atau tidak aktif.');
+        }
+
+        // Simpan nomor meja ke session supaya bisa dipakai saat order
+        session(['active_table' => $tableNumber]);
+
+        return view('customer.menu', compact('tableNumber'));
+    }
+
+    // Untuk tambah meja
+    public function storeTable(Request $request)
+    {
+        // Force JSON response for AJAX requests to prevent any output buffering issues
+        // Force JSON response for AJAX requests to prevent any output buffering issues
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            // Clean any previous output (e.g. from stray characters in config files)
+            if (ob_get_length()) {
+                ob_clean();
+            }
+
+            try {
+                // Validate the request
+                $validated = $request->validate([
+                    'number' => 'required|integer|min:1',
+                ]);
+
+                // Check if table already exists (prevent double submission race condition)
+                $existingTable = \App\Models\Table::where('number', $validated['number'])->first();
+                if ($existingTable) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Meja dengan nomor tersebut sudah ada.',
+                    ], 422);
+                }
+
+                // Create the table only if validation passes
+                $table = \App\Models\Table::create([
+                    'number' => $validated['number'],
+                    'is_active' => true,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Meja berhasil ditambahkan',
+                    'data' => $table
+                ], 201);
+                
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $e->errors()
+                ], 422);
+                
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menambahkan meja: ' . $e->getMessage()
+                ], 500);
+            }
+        }
+
+        // Regular form submission (non-AJAX)
+        try {
+            $validated = $request->validate([
+                'number' => 'required|integer|unique:tables,number|min:1',
+            ]);
+
+            \App\Models\Table::create([
+                'number' => $validated['number'],
+                'is_active' => true,
+            ]);
+
+            return redirect()->back()->with('success', 'Meja berhasil ditambahkan');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Gagal menambahkan meja'])->withInput();
+        }
+    }
+
+    // Hapus meja
+    public function destroyTable($id)
+    {
+        try {
+            $table = \App\Models\Table::findOrFail($id);
+            $table->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Meja berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus meja: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 }

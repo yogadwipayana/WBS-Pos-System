@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Table extends Model
+{
+    protected $fillable = ['number', 'qr_path', 'is_active'];
+}
+

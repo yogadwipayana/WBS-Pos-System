@@ -58,8 +58,7 @@
     </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-    <div class="flex h-screen overflow-hidden">
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200"><div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <x-admin-sidebar :active="$active ?? trim($__env->yieldContent('active')) ?: 'dashboard'" />
 
