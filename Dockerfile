@@ -68,7 +68,8 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache \
     && mkdir -p /var/www/html/storage/app/temp \
-    && chmod -R 775 /var/www/html/storage/app/temp
+    && chmod -R 777 /var/www/html/storage/app/temp \
+    && chown -R www-data:www-data /var/www/html/storage/app/temp
 
 # Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev
