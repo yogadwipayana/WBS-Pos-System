@@ -23,6 +23,19 @@ return [
          * Other Browsershot configuration options.
          */
         'write_options_to_file' => env('LARAVEL_PDF_WRITE_OPTIONS_TO_FILE', false),
-        'no_sandbox' => env('LARAVEL_PDF_NO_SANDBOX', false),
+        'no_sandbox' => env('LARAVEL_PDF_NO_SANDBOX', true),
+        
+        /*
+         * Additional Chrome arguments for Docker/production environments.
+         * These flags are required to run Chromium in containerized environments.
+         */
+        'args' => [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--disable-software-rasterizer',
+            '--disable-extensions',
+        ],
     ],
 ];
