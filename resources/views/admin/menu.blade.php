@@ -262,7 +262,7 @@
                                                     @if ($product->image)
                                                         <div
                                                             class="h-10 w-10 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                                                            <img src="/public/images/{{ $product->image }}"
+                                                            <img src="/images/{{ $product->image }}"
                                                                 alt="{{ $product->name }}"
                                                                 class="h-full w-full object-cover">
                                                         </div>
@@ -431,7 +431,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Image</label>
                         <input type="file" id="productImage" accept="image/*"
                             class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
-                        <p class="text-xs text-gray-500 mt-1">Place image in public/images/ folder. Max 2MB.</p>
+                        <p class="text-xs text-gray-500 mt-1">Upload image (will be saved to public/images/). Max 2MB.</p>
                     </div>
 
                     <!-- Description -->
