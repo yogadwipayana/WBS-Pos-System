@@ -102,3 +102,32 @@ Route::prefix('api')->group(function () {
         Route::delete('/order/{orderNumber}', [OrderController::class, 'destroy']);
     });
 });
+
+// ====== QR CODE MEJA (ADMIN & CASHIER) ======
+Route::middleware(['admin.auth', 'role:admin,cashier'])->group(function () {
+
+    // List semua meja + tombol QR
+    Route::get('/dashboard/tables', [OrderController::class, 'indexTables'])
+        ->name('admin.tables.index');
+
+    // Lihat QR Code per meja
+    Route::get('/dashboard/tables/{id}/qr', [OrderController::class, 'showQR'])
+        ->name('admin.tables.qr');
+
+    // Lihat & Print QR Code per meja
+    Route::get('/dashboard/tables/{id}/print', [OrderController::class, 'printQR'])
+        ->name('admin.tables.print');
+
+    // Tambah meja baru (admin only)
+    Route::post('/dashboard/tables', [OrderController::class, 'storeTable'])
+        ->name('admin.tables.store')
+        ->middleware('role:admin');
+
+});
+
+// API Routes for Tables (admin only for delete)
+Route::prefix('api')->middleware(['admin.auth', 'role:admin'])->group(function () {
+    Route::delete('/tables/{id}', [OrderController::class, 'destroyTable'])->name('api.tables.destroy');
+});
+// Route Pelanggan (Hasil Scan QR)
+Route::get('/order-menu', [OrderController::class, 'showMenu'])->name('pelanggan.menu');
