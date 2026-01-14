@@ -30,19 +30,7 @@ Route::get('/order-success', function () {
     return view('order-success');
 });
 
-// Public Image Access Route
-Route::get('/public/images/{filename}', function ($filename) {
-    $path = public_path('images/' . $filename);
 
-    if (!file_exists($path)) {
-        abort(404);
-    }
-
-    $file = file_get_contents($path);
-    $type = mime_content_type($path);
-
-    return response($file, 200)->header('Content-Type', $type);
-})->name('public.image');
 
 // Admin Authentication Routes
 Route::get('/login', [AdminController::class, 'showLogin'])->name('admin.login');

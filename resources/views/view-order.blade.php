@@ -63,7 +63,7 @@
                         <div class="min-w-[160px] bg-white border border-gray-100 rounded-xl p-2 shadow-sm flex gap-2 items-center"
                             data-best-selling-id="{{ $product->id }}" data-best-selling-name="{{ $product->name }}"
                             data-best-selling-price="{{ $product->price }}">
-                            <img src="/public/images/{{ $product->image }}"
+                            <img src="/images/{{ $product->image }}"
                                 class="w-14 h-14 rounded-lg object-cover bg-gray-200" alt="{{ $product->name }}">
                             <div class="flex-1">
                                 <h3 class="text-xs font-bold text-gray-800 leading-tight mb-1">

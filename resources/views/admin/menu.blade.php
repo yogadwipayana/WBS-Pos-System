@@ -262,7 +262,7 @@
                                                     @if ($product->image)
                                                         <div
                                                             class="h-10 w-10 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                                                            <img src="/public/images/{{ $product->image }}"
+                                                            <img src="/images/{{ $product->image }}"
                                                                 alt="{{ $product->name }}"
                                                                 class="h-full w-full object-cover">
                                                         </div>
@@ -373,7 +373,7 @@
 @push('scripts')
     <!-- Add Product Modal -->
     <div id="addProductModal"
-        class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
             <div
                 class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-white">
@@ -431,7 +431,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Image</label>
                         <input type="file" id="productImage" accept="image/*"
                             class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-600 focus:border-transparent">
-                        <p class="text-xs text-gray-500 mt-1">Place image in public/images/ folder. Max 2MB.</p>
+                        <p class="text-xs text-gray-500 mt-1">Upload image (will be saved to public/images/). Max 2MB.</p>
                     </div>
 
                     <!-- Description -->
@@ -462,7 +462,7 @@
 
     <!-- Edit Product Modal -->
     <div id="editProductModal"
-        class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
             <div
                 class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
@@ -552,7 +552,7 @@
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal"
-        class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
+        class="hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
             <div class="p-6">
                 <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mx-auto mb-4">

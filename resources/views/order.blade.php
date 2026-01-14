@@ -168,7 +168,7 @@
                                     data-item-id="{{ $product->id }}" data-item-name="{{ $product->name }}"
                                     data-item-price="{{ $product->price }}">
                                     <div class="rounded-lg overflow-hidden h-32 w-full mb-3 relative">
-                                        <img src="/public/images/{{ $product->image }}" alt="{{ $product->name }}"
+                                        <img src="/images/{{ $product->image }}" alt="{{ $product->name }}"
                                             class="w-full h-full object-cover">
                                     </div>
                                     <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">
@@ -255,7 +255,8 @@
             <!-- Header -->
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-gray-900 text-lg">Dine In</h3>
-                <button id="closeModalBtn" onclick="closeModal()" class="p-1 hover:bg-gray-100 rounded-full transition-colors">
+                <button id="closeModalBtn" onclick="closeModal()"
+                    class="p-1 hover:bg-gray-100 rounded-full transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-6 h-6 text-gray-500">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

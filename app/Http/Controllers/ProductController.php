@@ -212,31 +212,27 @@ class ProductController extends Controller
     }
 
     /**
-     * Compress and resize image to reduce file size
+     * Compress and resize image to target file size of 50-70KB
+     * Uses iterative compression to achieve optimal file size
      * 
      * @param \Illuminate\Http\UploadedFile $file
      * @param string $destinationPath
      * @param string $filename
-     * @param int $maxWidth Maximum width in pixels (default: 800)
-     * @param int $quality JPEG quality 0-100 (default: 75)
+     * @param int $targetMinSize Minimum target size in KB (default: 50)
+     * @param int $targetMaxSize Maximum target size in KB (default: 70)
      * @return void
      */
-    private function compressAndResizeImage($file, $destinationPath, $filename, $maxWidth = 800, $quality = 75)
+    private function compressAndResizeImage($file, $destinationPath, $filename, $targetMinSize = 50, $targetMaxSize = 70)
     {
+        // Convert KB to bytes
+        $targetMinBytes = $targetMinSize * 1024;
+        $targetMaxBytes = $targetMaxSize * 1024;
+
         // Get the original image dimensions and type
         $imageInfo = getimagesize($file->getPathname());
         $originalWidth = $imageInfo[0];
         $originalHeight = $imageInfo[1];
         $mimeType = $imageInfo['mime'];
-
-        // Calculate new dimensions while maintaining aspect ratio
-        if ($originalWidth > $maxWidth) {
-            $newWidth = $maxWidth;
-            $newHeight = intval(($originalHeight / $originalWidth) * $maxWidth);
-        } else {
-            $newWidth = $originalWidth;
-            $newHeight = $originalHeight;
-        }
 
         // Create image resource based on file type
         switch ($mimeType) {
@@ -259,42 +255,96 @@ class ProductController extends Controller
                 return;
         }
 
-        // Create a new true color image
-        $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
-
-        // Preserve transparency for PNG and GIF
-        if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
-            imagealphablending($resizedImage, false);
-            imagesavealpha($resizedImage, true);
-            $transparent = imagecolorallocatealpha($resizedImage, 255, 255, 255, 127);
-            imagefilledrectangle($resizedImage, 0, 0, $newWidth, $newHeight, $transparent);
-        }
-
-        // Resize the image
-        imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight);
-
-        // Save the compressed image
         $fullPath = $destinationPath . '/' . $filename;
-        switch ($mimeType) {
-            case 'image/jpeg':
-            case 'image/jpg':
-                imagejpeg($resizedImage, $fullPath, $quality);
+        
+        // Start with reasonable dimensions and quality
+        $currentWidth = min($originalWidth, 800);
+        $currentHeight = intval(($originalHeight / $originalWidth) * $currentWidth);
+        $quality = 85;
+        $attempts = 0;
+        $maxAttempts = 15;
+
+        do {
+            $attempts++;
+            
+            // Create a new true color image with current dimensions
+            $resizedImage = imagecreatetruecolor($currentWidth, $currentHeight);
+
+            // Preserve transparency for PNG and GIF
+            if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
+                imagealphablending($resizedImage, false);
+                imagesavealpha($resizedImage, true);
+                $transparent = imagecolorallocatealpha($resizedImage, 255, 255, 255, 127);
+                imagefilledrectangle($resizedImage, 0, 0, $currentWidth, $currentHeight, $transparent);
+            }
+
+            // Resize the image
+            imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $currentWidth, $currentHeight, $originalWidth, $originalHeight);
+
+            // Save to temporary buffer to check file size
+            ob_start();
+            switch ($mimeType) {
+                case 'image/jpeg':
+                case 'image/jpg':
+                    imagejpeg($resizedImage, null, $quality);
+                    break;
+                case 'image/png':
+                    $pngQuality = intval((100 - $quality) / 11);
+                    imagepng($resizedImage, null, $pngQuality);
+                    break;
+                case 'image/gif':
+                    imagegif($resizedImage, null);
+                    break;
+                case 'image/webp':
+                    imagewebp($resizedImage, null, $quality);
+                    break;
+            }
+            $imageData = ob_get_clean();
+            $currentFileSize = strlen($imageData);
+
+            // If file size is within target range, save and exit
+            if ($currentFileSize >= $targetMinBytes && $currentFileSize <= $targetMaxBytes) {
+                file_put_contents($fullPath, $imageData);
+                imagedestroy($resizedImage);
                 break;
-            case 'image/png':
-                // PNG quality is 0-9, convert from 0-100 scale
-                $pngQuality = intval((100 - $quality) / 11);
-                imagepng($resizedImage, $fullPath, $pngQuality);
+            }
+
+            // If file is too large, reduce quality or dimensions
+            if ($currentFileSize > $targetMaxBytes) {
+                // First try reducing quality
+                if ($quality > 40) {
+                    $quality -= 10;
+                } else {
+                    // If quality is already low, reduce dimensions
+                    $currentWidth = intval($currentWidth * 0.85);
+                    $currentHeight = intval($currentHeight * 0.85);
+                    $quality = 75; // Reset quality when reducing dimensions
+                }
+            } 
+            // If file is too small, increase quality or dimensions (but stay reasonable)
+            else if ($currentFileSize < $targetMinBytes) {
+                if ($quality < 90 && $currentWidth >= $originalWidth * 0.5) {
+                    $quality += 5;
+                } else {
+                    // File is acceptable even if slightly under target
+                    file_put_contents($fullPath, $imageData);
+                    imagedestroy($resizedImage);
+                    break;
+                }
+            }
+
+            imagedestroy($resizedImage);
+
+            // Prevent infinite loop
+            if ($attempts >= $maxAttempts) {
+                // Save whatever we have
+                file_put_contents($fullPath, $imageData);
                 break;
-            case 'image/gif':
-                imagegif($resizedImage, $fullPath);
-                break;
-            case 'image/webp':
-                imagewebp($resizedImage, $fullPath, $quality);
-                break;
-        }
+            }
+
+        } while (true);
 
         // Free up memory
         imagedestroy($sourceImage);
-        imagedestroy($resizedImage);
     }
 }
