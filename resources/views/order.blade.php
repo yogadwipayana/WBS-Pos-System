@@ -73,41 +73,11 @@
             <div class="bg-white border rounded-xl p-4 shadow-sm space-y-4">
                 <div class="flex items-center justify-between relative">
                     <span class="text-gray-700 font-medium">Tipe Order</span>
-                    <div class="relative" id="orderTypeDropdown">
-                        <button type="button" id="orderTypeBtn"
-                            class="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-                            <span id="orderTypeLabel">Takeaway</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" class="w-4 h-4 transition-transform duration-200"
-                                id="dropdownArrow">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                            </svg>
-                        </button>
-
-                        <!-- Dropdown Menu -->
-                        <div id="dropdownMenu"
-                            class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-[100] hidden transform origin-top-right transition-all duration-200 scale-95 opacity-0">
-                            <div class="py-1">
-                                <button type="button" onclick="setOrderType('takeaway')"
-                                    class="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center gap-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke="currentColor" class="w-4 h-4 shadow-sm">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                                    </svg>
-                                    Takeaway
-                                </button>
-                                <button type="button" onclick="setOrderType('dinein')"
-                                    class="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors flex items-center gap-3 border-t border-gray-50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke="currentColor" class="w-4 h-4 shadow-sm">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18" />
-                                    </svg>
-                                    Dine In
-                                </button>
-                            </div>
-                        </div>
+                    <div id="orderTypeBadge" class="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg text-sm font-semibold text-gray-700">
+                         <svg id="orderTypeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        </svg>
+                        <span id="orderTypeText">Takeaway</span>
                     </div>
                 </div>
 
@@ -287,189 +257,61 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const mode = urlParams.get('mode');
+            const mode = urlParams.get('mode') || 'takeaway';
             const table = urlParams.get('table');
-            const overlay = document.getElementById('modalOverlay');
-            const modal = document.getElementById('dineInModal');
-            const closeBtn = document.getElementById('closeModalBtn');
-            const saveBtn = document.getElementById('saveTableBtn');
-            const input = document.getElementById('tableNumberInput');
-
-            // New Elements for Toggle Logic
-            const dineInBanner = document.getElementById('dineInBanner');
-            const takewaySelector = document.getElementById('takewaySelector');
-            const tableDisplay = document.getElementById('tableDisplay');
-
-            window.openModal = function() {
-                if (overlay && modal) {
-                    overlay.classList.remove('hidden');
-                    // Slight delay to allow display:block to apply before opacity transition
-                    setTimeout(() => {
-                        overlay.classList.remove('opacity-0');
-                        modal.classList.remove('translate-y-full');
-                    }, 10);
-                }
-            }
-
-            window.closeModal = function() {
-                if (overlay && modal) {
-                    overlay.classList.add('opacity-0');
-                    modal.classList.add('translate-y-full');
-
-                    // Wait for transition to finish before hiding
-                    setTimeout(() => {
-                        overlay.classList.add('hidden');
-                    }, 300);
-                }
-            }
-
-            // Input Validation Logic
-            if (input && saveBtn) {
-                input.addEventListener('input', (e) => {
-                    if (e.target.value.length > 0) {
-                        saveBtn.classList.remove('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
-                        saveBtn.classList.add('bg-[#f05a28]', 'text-white', 'hover:bg-[#d94a1c]',
-                            'active:scale-95');
-                        saveBtn.disabled = false;
-                    } else {
-                        saveBtn.classList.add('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
-                        saveBtn.classList.remove('bg-[#f05a28]', 'text-white', 'hover:bg-[#d94a1c]',
-                            'active:scale-95');
-                        saveBtn.disabled = true;
-                    }
-                });
-            }
-
-            // --- Dropdown Functionality ---
-            const dropdownBtn = document.getElementById('orderTypeBtn');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            const dropdownArrow = document.getElementById('dropdownArrow');
-
-            function toggleDropdown() {
-                const isHidden = dropdownMenu.classList.contains('hidden');
-                if (isHidden) {
-                    dropdownMenu.classList.remove('hidden');
-                    setTimeout(() => {
-                        dropdownMenu.classList.remove('scale-95', 'opacity-0');
-                        dropdownMenu.classList.add('scale-100', 'opacity-100');
-                        dropdownArrow.classList.add('rotate-180');
-                    }, 10);
-                } else {
-                    dropdownMenu.classList.remove('scale-100', 'opacity-100');
-                    dropdownMenu.classList.add('scale-95', 'opacity-0');
-                    dropdownArrow.classList.remove('rotate-180');
-                    setTimeout(() => {
-                        dropdownMenu.classList.add('hidden');
-                    }, 200);
-                }
-            }
-
-            if (dropdownBtn) {
-                dropdownBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggleDropdown();
-                });
-            }
-
-            // Close dropdown when clicking outside
-            window.addEventListener('click', () => {
-                if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
-                    toggleDropdown();
-                }
-            });
-
+            
+            // New Elements for Display
             const orderTypeLabel = document.getElementById('orderTypeLabel');
             const takeawayStatus = document.getElementById('takeawayStatus');
             const dineInStatus = document.getElementById('dineInStatus');
+            const tableDisplay = document.getElementById('tableDisplay');
+            const orderTypeContainer = document.getElementById('orderTypeContainer');
 
-            window.setOrderType = function(type) {
-                const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('mode', type);
-
-                // If switching to takeaway, remove table param
-                if (type === 'takeaway') {
-                    currentUrl.searchParams.delete('table');
-                    if (input) input.value = '';
+            // --- UI Update for Locked Mode ---
+            if (mode === 'dinein') {
+                // Show Dine In Info
+                const orderTypeBadge = document.getElementById('orderTypeBadge');
+                const orderTypeIcon = document.getElementById('orderTypeIcon');
+                const orderTypeText = document.getElementById('orderTypeText');
+                
+                if (orderTypeBadge) {
+                   orderTypeBadge.classList.remove('bg-gray-100', 'text-gray-700');
+                   orderTypeBadge.classList.add('bg-orange-100', 'text-orange-700');
+                }
+                
+                if (orderTypeText) orderTypeText.textContent = 'Dine In';
+                
+                if (orderTypeIcon) {
+                    // Fork/Table Icon
+                    orderTypeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />';
                 }
 
-                window.history.pushState({}, '', currentUrl);
-
-                updateUIForMode(type);
-
-                // Close dropdown if open
-                if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
-                    toggleDropdown();
+                if (takeawayStatus) takeawayStatus.classList.add('hidden');
+                if (dineInStatus) {
+                    dineInStatus.classList.remove('hidden');
+                    // Update table number display
+                    if (tableDisplay) {
+                        tableDisplay.textContent = table ? `Meja ${table}` : 'Meja Tidak Terdeteksi';
+                    }
+                    // Remove "Click to change" hints if we want to lock it completely, 
+                    // but keeping table number visible is good. 
+                    // To strictly lock: remove pointer events or change styling.
+                    dineInStatus.classList.remove('cursor-pointer', 'hover:bg-orange-100', 'active:scale-[0.98]');
+                    dineInStatus.classList.add('cursor-default');
+                    dineInStatus.onclick = null; // Disable click
+                    const hintText = dineInStatus.querySelector('p');
+                    if (hintText) hintText.style.display = 'none'; // Hide "Klik untuk ubah"
                 }
 
-                // If switching to dine-in and no table is set, open modal
-                if (type === 'dinein') {
-                    const currentInput = document.getElementById('tableNumberInput');
-                    if (!currentInput || !currentInput.value) {
-                        setTimeout(() => {
-                            openModal();
-                        }, 100);
-                    }
-                }
+            } else {
+                 // Show Takeaway Info
+                const orderTypeText = document.getElementById('orderTypeText');
+                if (orderTypeText) orderTypeText.textContent = 'Takeaway';
+                
+                if (takeawayStatus) takeawayStatus.classList.remove('hidden');
+                if (dineInStatus) dineInStatus.classList.add('hidden');
             }
 
-            function updateUIForMode(currentMode) {
-                if (currentMode === 'dinein') {
-                    if (orderTypeLabel) orderTypeLabel.textContent = 'Dine In';
-                    if (takeawayStatus) takeawayStatus.classList.add('hidden');
-                    if (dineInStatus) dineInStatus.classList.remove('hidden');
-
-                    const tableNum = new URLSearchParams(window.location.search).get('table');
-                    if (tableNum && tableDisplay) {
-                        tableDisplay.textContent = 'Nomor Meja: ' + tableNum;
-                        if (input) input.value = tableNum;
-                    } else if (tableDisplay) {
-                        tableDisplay.textContent = 'Nomor Meja: -';
-                    }
-                } else {
-                    if (orderTypeLabel) orderTypeLabel.textContent = 'Takeaway';
-                    if (takeawayStatus) takeawayStatus.classList.remove('hidden');
-                    if (dineInStatus) dineInStatus.classList.add('hidden');
-                }
-            }
-
-            // Initialize UI
-            updateUIForMode(mode || 'takeaway');
-
-            // Auto open modal if in dinein mode and no table set
-            if ((mode === 'dinein') && (!table)) {
-                setTimeout(() => {
-                    openModal();
-                }, 500);
-            }
-
-            if (closeBtn) {
-                closeBtn.addEventListener('click', closeModal);
-            }
-            // Prevent closing modal by clicking overlay in dine-in mode without table number
-            if (overlay) {
-                overlay.addEventListener('click', (e) => {
-                    if (mode === 'dinein' && input && !input.value) {
-                        // Do nothing - prevent closing
-                        e.stopPropagation();
-                    } else {
-                        closeModal();
-                    }
-                });
-            }
-            if (saveBtn) {
-                saveBtn.addEventListener('click', () => {
-                    // Update the banner with the input value
-                    if (input && input.value && tableDisplay) {
-                        tableDisplay.textContent = 'Nomor Meja: ' + input.value;
-
-                        // Update URL with table number
-                        const currentUrl = new URL(window.location.href);
-                        currentUrl.searchParams.set('table', input.value);
-                        window.history.pushState({}, '', currentUrl);
-                    }
-                    closeModal();
-                });
-            }
 
             // --- Cart Functionality ---
             let cart = {}; // { itemId: { name, price, quantity } }
@@ -688,36 +530,14 @@
             window.handleCheckout = function() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const currentMode = urlParams.get('mode') || 'takeaway';
-                const tableInput = document.getElementById('tableNumberInput');
-                const validationError = document.getElementById('tableValidationError');
-
-                // Validate table number for dine-in mode
-                if (currentMode === 'dinein') {
-                    if (!tableInput || !tableInput.value || tableInput.value.trim() === '') {
-                        // Show modal if not visible
-                        openModal();
-
-                        // Show validation error
-                        if (validationError) {
-                            validationError.classList.remove('hidden');
-                        }
-
-                        // Focus on input
-                        if (tableInput) {
-                            tableInput.focus();
-                            tableInput.classList.add('border-red-500', 'ring-1', 'ring-red-500');
-                        }
-
-                        return; // Prevent checkout
-                    }
-                }
+                const table = urlParams.get('table'); // Trust the URL param since we removed input
 
                 // Build query parameters
                 let queryParams = `mode=${currentMode}`;
 
                 // Add table number if in dine-in mode and table number is set
-                if (currentMode === 'dinein' && tableInput && tableInput.value) {
-                    queryParams += `&table=${tableInput.value}`;
+                if (currentMode === 'dinein' && table) {
+                    queryParams += `&table=${table}`;
                 }
 
                 window.location.href = `/view-order?${queryParams}`;

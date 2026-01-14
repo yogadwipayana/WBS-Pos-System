@@ -253,15 +253,16 @@ class OrderController extends Controller
         $table = \App\Models\Table::findOrFail($id);
 
         // URL yang nanti discan pelanggan
-        $url = url("/order-menu?table=" . $table->number);
+        // FIXED: URL format should be /order?mode=dinein&table=NO_MEJA
+        $url = url("/order?mode=dinein&table=" . $table->number);
 
         // Generate QR code (SVG untuk tampilan yang lebih baik)
         $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(300)
             ->format('svg')
             ->generate($url);
 
-        return view('admin.tables.qr', compact('qrCode', 'table', 'url'))->
-            with('active', 'tables');
+        return view('admin.tables.qr', compact('qrCode', 'table', 'url'))
+            ->with('active', 'tables');
     }
 
     // Generate / Cetak QR untuk meja tertentu
@@ -270,7 +271,8 @@ class OrderController extends Controller
         $table = \App\Models\Table::findOrFail($id);
 
         // URL yang nanti discan pelanggan
-        $url = url("/order-menu?table=" . $table->number);
+        // FIXED: URL format should be /order?mode=dinein&table=NO_MEJA
+        $url = url("/order?mode=dinein&table=" . $table->number);
 
         // Generate QR code
         $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(300)

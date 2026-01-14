@@ -129,10 +129,14 @@
                     <div class="text-center group">
                         <div
                             class="w-16 h-16 mx-auto bg-orange-50 rounded-full flex items-center justify-center mb-2 shadow-sm border border-orange-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-orange-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                            <!-- Fork and Knife Icon (Material Design style) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-orange-400">
+                                <path fill-rule="evenodd" d="M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.751 6.751 0 0112 12a6.751 6.751 0 015.69 3.117C18.333 15.73 18.286 16.5 17.5 16.5H6.5c-.786 0-.833-.77-.19-1.383z" clip-rule="evenodd" class="hidden" />
+                                <!-- Actual Fork and Knife -->
+                                <path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v2.25h1.5a.75.75 0 010 1.5H12.75V20.25a.75.75 0 01-1.5 0V6.75H9.75a.75.75 0 010-1.5h1.5V3a.75.75 0 01.75-.75zM6.75 2.25A.75.75 0 017.5 3v1.5h1.125a.75.75 0 010 1.5H7.5v9.75a.75.75 0 01-1.5 0V6h-1.125a.75.75 0 010-1.5H6V3a.75.75 0 01.75-.75zM17.25 2.25a.75.75 0 01.75.75v7.506a2.25 2.25 0 01-2.25 2.25v7.494a.75.75 0 01-1.5 0V12.75a2.25 2.25 0 01-2.25-2.25V3a.75.75 0 01.75-.75h4.5z" clip-rule="evenodd" class="hidden" />
+                                
+                                <!-- Simpler Solid Fork and Knife -->
+                                <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z" />
                             </svg>
                         </div>
                         <span class="text-gray-600 font-medium text-sm">Makan</span>
@@ -143,13 +147,12 @@
             <div class="px-4 mt-12 flex-grow">
                 <h3 class="text-center text-gray-900 font-bold text-lg mb-6">Bagaimana Anda ingin makan hari ini?</h3>
                 <div class="space-y-4">
-                    <button onclick="window.location.href = '/order?mode=dinein';"
-                        class="w-full bg-white border border-gray-200 text-gray-800 font-bold py-4 rounded-xl shadow-sm hover:border-gray-300 hover:bg-gray-50 transition active:scale-[0.99]">
-                        Makan di Tempat
-                    </button>
                     <button onclick="window.location.href = '/order?mode=takeaway';"
-                        class="w-full bg-white border border-gray-200 text-gray-800 font-bold py-4 rounded-xl shadow-sm hover:border-gray-300 hover:bg-gray-50 transition active:scale-[0.99]">
-                        Takeaway
+                        class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-[#d94a1c] transition active:scale-[0.98] flex items-center justify-center gap-2">
+                        <span>Mulai Pesan</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
                     </button>
                 </div>
             </div>
