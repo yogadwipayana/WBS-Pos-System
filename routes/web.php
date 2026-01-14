@@ -30,6 +30,8 @@ Route::get('/order-success', function () {
     return view('order-success');
 });
 
+
+
 // Admin Authentication Routes
 Route::get('/login', [AdminController::class, 'showLogin'])->name('admin.login');
 Route::post('/login', [AdminController::class, 'login'])->name('admin.login.post');
