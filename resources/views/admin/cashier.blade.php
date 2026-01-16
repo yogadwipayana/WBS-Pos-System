@@ -78,7 +78,7 @@
                     <div class="grid grid-cols-1 gap-3">
                         @foreach ($recentOrders as $recent)
                             <div onclick="document.getElementById('orderSearchInput').value = '{{ $recent->order_number }}'; searchOrder();"
-                                class="bg-white border hover:border-orange-500 hover:shadow-md rounded-xl p-4 cursor-pointer transition-all flex items-center justify-between group">
+                                class="bg-white border shadow-sm border-gray-100 hover:border-orange-500 hover:shadow-md rounded-xl p-4 cursor-pointer transition-all flex items-center justify-between group">
                                 <div class="flex items-center gap-4">
                                     <div
                                         class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-sm">

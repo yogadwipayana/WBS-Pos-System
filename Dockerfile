@@ -16,18 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     nginx \
     supervisor \
-    chromium \
-    chromium-sandbox \
-    fonts-liberation \
-    fonts-noto-color-emoji \
-    fonts-noto-cjk \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-# Set Puppeteer environment variables
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
-    PUPPETEER_ARGS="--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage"
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip opcache
@@ -48,7 +38,7 @@ RUN echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/custom.ini \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install Node.js and npm
+# Install Node.js and npm (needed for Vite build only)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean \
@@ -66,17 +56,13 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache \
-    && mkdir -p /var/www/html/storage/app/temp \
-    && chmod -R 777 /var/www/html/storage/app/temp \
-    && chown -R www-data:www-data /var/www/html/storage/app/temp
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
 # Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev
 
 # Install Node dependencies and build assets
-# Keep production dependencies (puppeteer) but remove devDependencies
-RUN npm ci && npm run build && npm prune --production
+RUN npm ci && npm run build && rm -rf node_modules
 
 # Create Laravel storage symlink
 RUN php artisan storage:link || true

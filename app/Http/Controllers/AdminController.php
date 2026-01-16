@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UpdateOrderStatusRequest;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class AdminController extends Controller
 {
@@ -390,7 +390,7 @@ class AdminController extends Controller
         $export = new TransactionExport($request);
         $transactions = $export->query()->get();
 
-        return Pdf::loadView('pdf.transactions', ['transactions' => $transactions])
+        return PDF::loadView('pdf.transactions', ['transactions' => $transactions])
             ->setPaper('a4', 'landscape')
             ->download('transactions-' . now()->format('Y-m-d_H-i') . '.pdf');
     }
@@ -406,7 +406,7 @@ class AdminController extends Controller
             ->firstOrFail();
 
         // Generate PDF
-        return Pdf::loadView('pdf.kitchen-receipt', ['order' => $order])
+        return PDF::loadView('pdf.kitchen-receipt', ['order' => $order])
             ->setPaper('a4')
             ->download('kitchen-receipt-' . $order->order_number . '.pdf');
     }

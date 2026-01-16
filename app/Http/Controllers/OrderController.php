@@ -9,7 +9,7 @@ use App\Models\Table;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreOrderRequest;
 use Illuminate\Support\Facades\DB;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class OrderController extends Controller
@@ -25,9 +25,9 @@ class OrderController extends Controller
             ->firstOrFail();
 
         // Generate PDF
-        return Pdf::view('pdf.customer-receipt', ['order' => $order])
-            ->format('a4') // Receipt size can be adjusted to 'a5' or custom width if needed, but a4 is safe
-            ->name('receipt-' . $order->order_number . '.pdf');
+        return PDF::loadView('pdf.customer-receipt', ['order' => $order])
+            ->setPaper('a4')
+            ->download('receipt-' . $order->order_number . '.pdf');
     }
 
     /**
