@@ -144,7 +144,13 @@ class AdminController extends Controller
 
     public function cashier()
     {
-        return view('admin.cashier')->with('active', 'cashier');
+        // Get latest 5 active orders for quick access
+        $recentOrders = Order::whereIn('status', ['pending', 'preparing', 'ready'])
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('admin.cashier', compact('recentOrders'))->with('active', 'cashier');
     }
 
     public function orders(Request $request)

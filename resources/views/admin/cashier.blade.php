@@ -71,6 +71,57 @@
                 </div>
             </div>
 
+            <!-- Recent Orders List -->
+            @if (isset($recentOrders) && $recentOrders->count() > 0)
+                <div class="mb-6">
+                    <h3 class="text-sm font-semibold text-gray-500 mb-3 px-1">Recent Active Orders</h3>
+                    <div class="grid grid-cols-1 gap-3">
+                        @foreach ($recentOrders as $recent)
+                            <div onclick="document.getElementById('orderSearchInput').value = '{{ $recent->order_number }}'; searchOrder();"
+                                class="bg-white border hover:border-orange-500 hover:shadow-md rounded-xl p-4 cursor-pointer transition-all flex items-center justify-between group">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-sm">
+                                        {{ substr($recent->order_number, -3) }}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900">{{ $recent->order_number }}</h4>
+                                        <p class="text-xs text-gray-500">
+                                            @if ($recent->order_type === 'dinein' && $recent->table_number)
+                                                Table {{ $recent->table_number }}
+                                            @else
+                                                {{ $recent->customer_name }}
+                                            @endif
+                                            • {{ $recent->created_at->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    @php
+                                        $statusColors = [
+                                            'pending' => 'bg-yellow-100 text-yellow-800',
+                                            'preparing' => 'bg-blue-100 text-blue-800',
+                                            'ready' => 'bg-green-100 text-green-800',
+                                        ];
+                                        $color = $statusColors[$recent->status] ?? 'bg-gray-100 text-gray-800';
+                                    @endphp
+                                    <span
+                                        class="px-2.5 py-1 rounded-full text-xs font-medium {{ $color }} capitalize">
+                                        {{ $recent->status }}
+                                    </span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor"
+                                        class="w-4 h-4 text-gray-400 group-hover:text-orange-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             <!-- Order Result (Hidden by default) -->
             <div id="orderResult" class="hidden animate-fade-in-up">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
