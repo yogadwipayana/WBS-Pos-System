@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     nginx \
     supervisor \
+    netcat-openbsd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
@@ -58,17 +59,18 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev
+# Install PHP dependencies (skip scripts to avoid .env requirement)
+RUN composer install --optimize-autoloader --no-dev --no-scripts
+
+# Run post-install scripts after dependencies are installed
+RUN composer run-script post-autoload-dump || true
 
 # Install Node dependencies and build assets
 RUN npm ci && npm run build && rm -rf node_modules
 
-# Create Laravel storage symlink
-RUN php artisan storage:link || true
-
 # Expose ports
 EXPOSE 80 443
+
 
 # Start supervisor (manages PHP-FPM and nginx)
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
