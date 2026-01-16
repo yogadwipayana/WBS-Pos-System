@@ -15,10 +15,10 @@ class TableSeeder extends Seeder
     public function run()
     {
         for ($i = 1; $i <= 10; $i++) {
-            Table::create([
-                'number' => $i,
-                'is_active' => true, // supaya bisa langsung valid di showMenu
-            ]);
+            Table::updateOrCreate(
+                ['number' => $i],
+                ['is_active' => true]
+            );
         }
     }
 }

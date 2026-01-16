@@ -243,14 +243,14 @@ class OrderController extends Controller
     // List semua meja (Admin Dashboard)
     public function indexTables()
     {
-        $tables = \App\Models\Table::orderBy('number')->get();
-        return view('admin.tables.index', compact('tables'))->with('active','tables');
+        $tables = Table::orderBy('number')->paginate(5);
+        return view('admin.tables.index', compact('tables'))->with('active', 'tables');
     }
 
     // Lihat QR code untuk meja tertentu (untuk button "Lihat QR")
     public function showQR($id)
     {
-        $table = \App\Models\Table::findOrFail($id);
+        $table = Table::findOrFail($id);
 
         // URL yang nanti discan pelanggan
         // FIXED: URL format should be /order?mode=dinein&table=NO_MEJA
@@ -268,15 +268,15 @@ class OrderController extends Controller
     // Generate / Cetak QR untuk meja tertentu
     public function printQR($id)
     {
-        $table = \App\Models\Table::findOrFail($id);
+        $table = Table::findOrFail($id);
 
         // URL yang nanti discan pelanggan
         // FIXED: URL format should be /order?mode=dinein&table=NO_MEJA
         $url = url("/order?mode=dinein&table=" . $table->number);
 
         // Generate QR code
-        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(300)
-            ->format('png') // bisa juga 'svg' kalau mau vektor
+        $qrCode = QrCode::size(300)
+            ->format('svg') // Using SVG to avoid imagick dependency
             ->generate($url);
 
         return view('admin.tables.print', compact('qrCode', 'table'));
@@ -289,7 +289,7 @@ class OrderController extends Controller
     {
         $tableNumber = $request->query('table');
 
-        $checkTable = \App\Models\Table::where('number', $tableNumber)
+        $checkTable = Table::where('number', $tableNumber)
             ->where('is_active', true)
             ->first();
 
@@ -340,14 +340,12 @@ class OrderController extends Controller
                     'message' => 'Meja berhasil ditambahkan',
                     'data' => $table
                 ], 201);
-                
             } catch (\Illuminate\Validation\ValidationException $e) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validasi gagal',
                     'errors' => $e->errors()
                 ], 422);
-                
             } catch (\Exception $e) {
                 return response()->json([
                     'success' => false,
@@ -368,10 +366,8 @@ class OrderController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Meja berhasil ditambahkan');
-            
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
-            
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Gagal menambahkan meja'])->withInput();
         }
@@ -395,6 +391,4 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
-
 }

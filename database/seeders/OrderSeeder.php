@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
 class OrderSeeder extends Seeder
@@ -30,8 +31,9 @@ class OrderSeeder extends Seeder
             // Random date within last 30 days
             $createdAt = now()->subDays(rand(0, 30))->subHours(rand(0, 23))->subMinutes(rand(0, 59));
 
+            #$order_number = "ORD01B1M";
             $order = Order::create([
-                'order_number' => 'WBS' . date('Ymd', strtotime($createdAt)) . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'order_number' => 'ORD' . strtoupper(Str::random(5)),
                 'customer_name' => 'Customer ' . $i,
                 'order_type' => $orderType,
                 'table_number' => $tableNumber,

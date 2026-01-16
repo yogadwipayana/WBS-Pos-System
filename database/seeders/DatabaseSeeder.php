@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         DB::table('orders')->truncate();
         DB::table('products')->truncate();
         DB::table('categories')->truncate();
+        DB::table('tables')->truncate();
         DB::table('admins')->truncate();
 
         // Re-enable foreign key checks
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CategorySeeder::class,
+            TableSeeder::class,
             ProductSeeder::class,
             AdminSeeder::class,
             OrderSeeder::class,

@@ -10,7 +10,7 @@
             <p class="text-sm text-gray-500">Kelola QR code untuk setiap meja</p>
         </div>
         <div class="flex items-center gap-4">
-            @if(session('admin_role') === 'admin')
+            @if (session('admin_role') === 'admin')
                 <button onclick="openAddTableModal()"
                     class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -135,12 +135,13 @@
                                                 Print QR
                                             </a>
 
-                                            @if(session('admin_role') === 'admin')
+                                            @if (session('admin_role') === 'admin')
                                                 <!-- Delete Button (Admin Only) -->
                                                 <button onclick="confirmDelete({{ $table->id }}, {{ $table->number }})"
                                                     class="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 text-xs font-semibold flex items-center gap-1 transition-colors">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                        stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                        class="w-4 h-4">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                     </svg>
@@ -155,12 +156,14 @@
                                     <td colspan="3" class="px-6 py-12 text-center">
                                         <div class="flex flex-col items-center justify-center text-gray-500">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mb-4 text-gray-300">
+                                                stroke-width="1.5" stroke="currentColor"
+                                                class="w-16 h-16 mb-4 text-gray-300">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
                                             </svg>
                                             <p class="text-lg font-semibold text-gray-700">Belum ada meja</p>
-                                            <p class="text-sm text-gray-500 mt-1">Klik "Tambah Meja" untuk menambahkan meja baru
+                                            <p class="text-sm text-gray-500 mt-1">Klik "Tambah Meja" untuk menambahkan meja
+                                                baru
                                             </p>
                                         </div>
                                     </td>
@@ -169,6 +172,60 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- Pagination -->
+                @if ($tables->hasPages())
+                    <div class="bg-white px-6 py-4 border-t border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-gray-700">
+                                Showing <span class="font-semibold">{{ $tables->firstItem() }}</span>
+                                to <span class="font-semibold">{{ $tables->lastItem() }}</span>
+                                of <span class="font-semibold">{{ $tables->total() }}</span> results
+                            </div>
+                            <div class="flex gap-2">
+                                {{-- Previous Page Link --}}
+                                @if ($tables->onFirstPage())
+                                    <span
+                                        class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+                                        Previous
+                                    </span>
+                                @else
+                                    <a href="{{ $tables->previousPageUrl() }}"
+                                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                        Previous
+                                    </a>
+                                @endif
+
+                                {{-- Page Numbers --}}
+                                @foreach ($tables->getUrlRange(1, $tables->lastPage()) as $page => $url)
+                                    @if ($page == $tables->currentPage())
+                                        <span
+                                            class="px-4 py-2 text-sm font-medium text-white bg-orange-600 border border-orange-600 rounded-lg">
+                                            {{ $page }}
+                                        </span>
+                                    @else
+                                        <a href="{{ $url }}"
+                                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                            {{ $page }}
+                                        </a>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($tables->hasMorePages())
+                                    <a href="{{ $tables->nextPageUrl() }}"
+                                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                        Next
+                                    </a>
+                                @else
+                                    <span
+                                        class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+                                        Next
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </main>
@@ -176,11 +233,11 @@
 
 @push('scripts')
     <!-- Add Table Modal -->
-    <div id="addTableModal"
-        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
+    <div id="addTableModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
         style="background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
-            <div class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-white">
+            <div
+                class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-white">
                 <div>
                     <h3 class="text-2xl font-bold text-gray-900">Tambah Meja Baru</h3>
                     <p class="text-sm text-gray-600 mt-1">Buat QR code untuk meja baru</p>
@@ -231,7 +288,7 @@
         async function submitAddTable() {
             const submitBtn = document.querySelector('button[onclick="submitAddTable()"]');
             const originalBtnText = submitBtn.innerHTML;
-            
+
             const tableNumber = document.getElementById('tableNumber').value;
 
             // Validation
@@ -250,7 +307,8 @@
 
                 // Disable button and show loading state
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full mr-2"></span> Menyimpan...';
+                submitBtn.innerHTML =
+                    '<span class="animate-spin inline-block w-4 h-4 border-[2px] border-current border-t-transparent text-white rounded-full mr-2"></span> Menyimpan...';
 
                 const response = await fetch('{{ route('admin.tables.store') }}', {
                     method: 'POST',
@@ -284,7 +342,7 @@
                         const errors = Object.values(result.errors).flat();
                         errorMessage = errors.join(', ');
                     }
-                    
+
                 }
             } catch (error) {
                 console.error('Error:', error);
